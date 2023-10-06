@@ -3,17 +3,18 @@ package solver;
 public class SokoBot {
 
    private int[2] playerCoordinate;
-    private int numOfGoals = 0;
-    private int[][] goals;
-    private int numOfCrates = 0;
-    private int[][] crates;
-    private int numOfWalls = 0;
-    private int[][] walls;
+   private int numOfGoals = 0;
+   private int[][] goals;
+   private int numOfCrates = 0;
+   private int[][] crates;
+   private int numOfWalls = 0;
+   private int[][] walls;
 
   /*Responsible for the movement of player*/
   public String movement(){
      while(numOfGoals > 0){
-        
+        for (checkCrate = 0; checkCrate < crates.length(); checkCrate++){
+           if (playerCoordinate[0]+1 ==
      }
   }
   public String solveSokobanPuzzle(int width, int height, char[][] mapData, char[][] itemsData) {
