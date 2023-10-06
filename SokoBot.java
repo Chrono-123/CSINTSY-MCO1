@@ -77,19 +77,16 @@ public class SokoBot {
           playerCoordinate[1] = i;
         }
         if(itemsData[i][j] == '$'){ //coordinates of crates/boxes
-          crates[numOfCrates][0] = j;
-          crates[numOfCrates][1] = i;
-          numOfCrates++;
+          crates[crates.length()][0] = j;
+          crates[crates.length()][1] = i;
         }
         if(mapData[i][j] == '.'){ //coordinates of goals
-          goals[numOfGoals][0] = j;
-          goals[numOfGoals][1] = i;
-          numOfGoals++;
+          goals[goals.length()][0] = j;
+          goals[goals.length()][1] = i;
         }
         if(mapData[i][j] == '#'){ //coordinates of walls
-          walls[numOfWalls][0] = j;
-          walls[numOfWalls][1] = i;
-          numOfWalls++;
+          walls[walls.length()][0] = j;
+          walls[walls.length()][1] = i;
         }
       }
     }
