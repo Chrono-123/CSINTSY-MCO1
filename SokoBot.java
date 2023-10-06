@@ -11,8 +11,17 @@ public class SokoBot {
      * sequence
      * that just moves left and right repeatedly.
      */
-    for(y = 0; y < height; y++){
-      for(x = 0;x < width; x++){
+    int xOfPlayer;
+    int yOfPlayer;
+      for(int i = 0; i < height; i++){
+      for(int j = 0; j < width; j++){
+        if(itemsData[i][j] == '@'){
+          xOfPlayer = j;
+          yOfPlayer = i;
+      }
+    }
+    for(int y = 0; y < height; y++){
+      for(int x = 0;x < width; x++){
         
       }
     }
