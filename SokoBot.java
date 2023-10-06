@@ -13,18 +13,19 @@ public class SokoBot {
      */
     int xOfPlayer;
     int yOfPlayer;
-      for(int i = 0; i < height; i++){
+    
+    for(int i = 0; i < height; i++){
       for(int j = 0; j < width; j++){
         if(itemsData[i][j] == '@'){
           xOfPlayer = j;
           yOfPlayer = i;
+        }
+        if(mapData[i][j] == '.'){
+          
+          
       }
     }
-    for(int y = 0; y < height; y++){
-      for(int x = 0;x < width; x++){
-        
-      }
-    }
+    
     try {
       Thread.sleep(3000);
     } catch (Exception ex) {
