@@ -15,16 +15,16 @@ public class SokoBot {
    /*checks if player can move*/
    public void checkWall(){
       for (int checking = 0; checking < walls.length(); checking++){
-         if (playerCoordinate[0]+move == walls[checking][0]){
+         if (playerCoordinate[0]+move == walls[checking][0]){ //wall right of player
             right = false;
          }
-         if (playerCoordinate[1]+move == walls[checking][1]){
+         if (playerCoordinate[1]+move == walls[checking][1]){ //wall above player
             up = false;
          }
-         if (playerCoordinate[0]-move == walls[checking][0]){
+         if (playerCoordinate[0]-move == walls[checking][0]){ //wall left of player
             left = false;
          }
-         if (playerCoordinate[1]-move == walls[checking][1]){
+         if (playerCoordinate[1]-move == walls[checking][1]){ //down below player
             down = false;
          }
       }
@@ -32,16 +32,16 @@ public class SokoBot {
       /*Checks if crates can move*/
       public void checkCrate(){
          for (int checking = 0; checking < crates.length(); checking++){
-         if (playerCoordinate[0]+move == crates[checking][0]){
+         if (playerCoordinate[0]+move == crates[checking][0]){ //crate right of player
             move = 2;
          }
-         if (playerCoordinate[1]+move == crates[checking][1]){
+         if (playerCoordinate[1]+move == crates[checking][1]){ //crate above player
             move = 2;
          }
-         if (playerCoordinate[0]-move == crates[checking][0]){
+         if (playerCoordinate[0]-move == crates[checking][0]){ //crate left of player
             move = 2;
          }
-         if (playerCoordinate[1]-move == crates[checking][1]){
+         if (playerCoordinate[1]-move == crates[checking][1]){ //crate below player
             move = 2;
          }
          switch(move){
