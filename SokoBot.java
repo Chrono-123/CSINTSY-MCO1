@@ -9,21 +9,23 @@ public class SokoBot {
    private int[][] crates;
    private int numOfWalls = 0;
    private int[][] walls;
+   private boolean up = true, down = true, left = true, right = true;
 
    public boolean checkWall(){
       for (int checking = 0; checking < walls.length(); checking++){
          if (playerCoordinate[0]+1 == walls[checking][0]){
-            return false;
+            right = false;
          }
-         else if (playerCoordinate[1]+1 == walls[checking][1]){
-            return false;
+         if (playerCoordinate[1]+1 == walls[checking][1]){
+            up = false;
          }
-         else if (playerCoordinate[0]-1 == walls[checking][0]){
-            return false;
+         if (playerCoordinate[0]-1 == walls[checking][0]){
+            left = false;
          }
-         else if (playerCoordinate[1]-1 == walls[checking][1]){
-            return false;
+         if (playerCoordinate[1]-1 == walls[checking][1]){
+            down = false;
          }
+      }
       
 
   /*Responsible for the movement of player*/
