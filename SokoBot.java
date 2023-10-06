@@ -11,16 +11,15 @@ public class SokoBot {
      * sequence
      * that just moves left and right repeatedly.
      */
-    private int xOfPlayer;
-    private int yOfPlayer;
+    private int[2] playerCoordinate;
     private int numOfGoals = 0;
     private int[][] goals;
     
     for(int i = 0; i < height; i++){
       for(int j = 0; j < width; j++){
         if(itemsData[i][j] == '@'){
-          xOfPlayer = j;
-          yOfPlayer = i;
+          playerCoordinate[0] = j;
+          playerCoordinate[1] = i;
         }
         if(mapData[i][j] == '.'){
           goals[numOfGoals][0] = j;
