@@ -10,20 +10,42 @@ public class SokoBot {
    private int numOfWalls = 0;
    private int[][] walls;
    private boolean up = true, down = true, left = true, right = true;
+   private int move = 1;
 
-   public boolean checkWall(){
+   /*checks if player can move*/
+   public void checkWall(){
       for (int checking = 0; checking < walls.length(); checking++){
-         if (playerCoordinate[0]+1 == walls[checking][0]){
+         if (playerCoordinate[0]+move == walls[checking][0]){
             right = false;
          }
-         if (playerCoordinate[1]+1 == walls[checking][1]){
+         if (playerCoordinate[1]+move == walls[checking][1]){
             up = false;
          }
-         if (playerCoordinate[0]-1 == walls[checking][0]){
+         if (playerCoordinate[0]-move == walls[checking][0]){
             left = false;
          }
-         if (playerCoordinate[1]-1 == walls[checking][1]){
+         if (playerCoordinate[1]-move == walls[checking][1]){
             down = false;
+         }
+      }
+
+      /*Checks if crates can move*/
+      public void checkCrate(){
+         for (int checking = 0; checking < crates.length(); checking++){
+         if (playerCoordinate[0]+move == crates[checking][0]){
+            move = 2;
+         }
+         if (playerCoordinate[1]+move == crates[checking][1]){
+            move = 2;
+         }
+         if (playerCoordinate[0]-move == crates[checking][0]){
+            move = 2;
+         }
+         if (playerCoordinate[1]-move == crates[checking][1]){
+            move = 2;
+         }
+         switch(move){
+            case 2: checkWall();
          }
       }
       
@@ -31,6 +53,9 @@ public class SokoBot {
   /*Responsible for the movement of player*/
   public String movement(){
      while(numOfGoals > 0){
+        checkWall();
+        checkCrate();
+        
         
      }
   }
