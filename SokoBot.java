@@ -14,12 +14,18 @@ public class SokoBot {
     private int[2] playerCoordinate;
     private int numOfGoals = 0;
     private int[][] goals;
+    private int numOfCrates = 0;
+    private int[][] crates;
     /*To identify the coordinates of player at the start and the goals*/
     for(int i = 0; i < height; i++){ 
       for(int j = 0; j < width; j++){
         if(itemsData[i][j] == '@'){ //coordinates of player at start
           playerCoordinate[0] = j;
           playerCoordinate[1] = i;
+        }
+        if(itemsData[i][j] == '$'){
+          crates[numOfCrates][0] = j;
+          crates[numOfCrates][1] = i;
         }
         if(mapData[i][j] == '.'){ //coordinates of goals
           goals[numOfGoals][0] = j;
