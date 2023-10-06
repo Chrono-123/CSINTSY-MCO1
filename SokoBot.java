@@ -2,6 +2,9 @@ package solver;
 
 public class SokoBot {
 
+  public String movement(int[][] playerCoordinate, int numOfGoals, int[][] goals, int numOfCrates, int[][] crates, int numOfWalls, int[][] walls){
+
+  }
   public String solveSokobanPuzzle(int width, int height, char[][] mapData, char[][] itemsData) {
     /*
      * YOU NEED TO REWRITE THE IMPLEMENTATION OF THIS METHOD TO MAKE THE BOT SMARTER
