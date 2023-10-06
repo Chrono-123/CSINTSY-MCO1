@@ -25,6 +25,7 @@ public class SokoBot {
           goals[numOfGoals][0] = j;
           goals[numOfGoals][1] = i;
           numOfGoals++;
+        }
       }
     }
     
