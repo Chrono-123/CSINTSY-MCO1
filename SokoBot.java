@@ -39,6 +39,7 @@ public class SokoBot {
           walls[numOfWalls][0] = j;
           walls[numOfWalls][1] = i;
           numOfWalls++;
+        }
       }
     }
     
