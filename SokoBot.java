@@ -2,7 +2,16 @@ package solver;
 
 public class SokoBot {
 
-  public String movement(int[][] playerCoordinate, int numOfGoals, int[][] goals, int numOfCrates, int[][] crates, int numOfWalls, int[][] walls){
+   private int[2] playerCoordinate;
+    private int numOfGoals = 0;
+    private int[][] goals;
+    private int numOfCrates = 0;
+    private int[][] crates;
+    private int numOfWalls = 0;
+    private int[][] walls;
+
+  /*Responsible for the movement of player*/
+  public String movement(){
 
   }
   public String solveSokobanPuzzle(int width, int height, char[][] mapData, char[][] itemsData) {
@@ -14,13 +23,7 @@ public class SokoBot {
      * sequence
      * that just moves left and right repeatedly.
      */
-    private int[2] playerCoordinate;
-    private int numOfGoals = 0;
-    private int[][] goals;
-    private int numOfCrates = 0;
-    private int[][] crates;
-    private int numOfWalls = 0;
-    private int[][] walls;
+   
     /*To identify the coordinates of all solid objects that is not an empty space*/
     for(int i = 0; i < height; i++){ 
       for(int j = 0; j < width; j++){
