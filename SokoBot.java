@@ -10,11 +10,26 @@ public class SokoBot {
    private int numOfWalls = 0;
    private int[][] walls;
 
+   public boolean checkWall(){
+      for (int checking = 0; checking < walls.length(); checking++){
+         if (playerCoordinate[0]+1 == walls[checking][0]){
+            return false;
+         }
+         else if (playerCoordinate[1]+1 == walls[checking][1]){
+            return false;
+         }
+         else if (playerCoordinate[0]-1 == walls[checking][0]){
+            return false;
+         }
+         else if (playerCoordinate[1]-1 == walls[checking][1]){
+            return false;
+         }
+      
+
   /*Responsible for the movement of player*/
   public String movement(){
      while(numOfGoals > 0){
-        for (checkCrate = 0; checkCrate < crates.length(); checkCrate++){
-           if (playerCoordinate[0]+1 ==
+        
      }
   }
   public String solveSokobanPuzzle(int width, int height, char[][] mapData, char[][] itemsData) {
