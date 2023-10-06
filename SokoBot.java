@@ -24,7 +24,7 @@ public class SokoBot {
          if (playerCoordinate[0]-move == walls[checking][0]){ //wall left of player
             left = false;
          }
-         if (playerCoordinate[1]-move == walls[checking][1]){ //down below player
+         if (playerCoordinate[1]-move == walls[checking][1]){ //wall below player
             down = false;
          }
       }
