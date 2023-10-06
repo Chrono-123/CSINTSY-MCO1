@@ -14,7 +14,7 @@ public class SokoBot {
     private int xOfPlayer;
     private int yOfPlayer;
     private int numOfGoals = 0;
-    private char[][] goals;
+    private int[][] goals;
     
     for(int i = 0; i < height; i++){
       for(int j = 0; j < width; j++){
