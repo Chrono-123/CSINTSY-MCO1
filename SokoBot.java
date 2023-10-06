@@ -13,6 +13,7 @@ public class SokoBot {
      */
     private int xOfPlayer;
     private int yOfPlayer;
+    private int numOfGoals = 0;
     private char[][] goals;
     
     for(int i = 0; i < height; i++){
@@ -22,8 +23,8 @@ public class SokoBot {
           yOfPlayer = i;
         }
         if(mapData[i][j] == '.'){
-          
-          
+          goals[numOfGoals][0] = j;
+          goals[numOfGoals][1] = i;
       }
     }
     
