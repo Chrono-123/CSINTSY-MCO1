@@ -11,6 +11,11 @@ public class SokoBot {
      * sequence
      * that just moves left and right repeatedly.
      */
+    for(y = 0; y < height; y++){
+      for(x = 0;x < width; x++){
+        
+      }
+    }
     try {
       Thread.sleep(3000);
     } catch (Exception ex) {
