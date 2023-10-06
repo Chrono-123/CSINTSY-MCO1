@@ -12,7 +12,20 @@ public class SokoBot {
 
   /*Responsible for the movement of player*/
   public String movement(){
-
+     while(numOfGoals > 0){
+        for(int i = 0; i < numOfWalls; i++){ 
+            if (playerCoordinate[0]+1 != walls[i][0]){ //up
+               playerCoordinate[0]++;
+            }
+           else if (playerCoordinate[1]+1 != walls[i][1]){ //right
+              playerCoordinate[1]++;
+           }
+           else if (playerCoordinate[0]-1 != walls[i][0]){ //down
+              playerCoordinate[0]--;
+        }
+           else if (playerCoordinate[1]-1 != walls[i][1]){ //left
+              playerCoordinate[1]--;
+     }
   }
   public String solveSokobanPuzzle(int width, int height, char[][] mapData, char[][] itemsData) {
     /*
