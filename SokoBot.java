@@ -18,7 +18,7 @@ public class SokoBot {
     private int[][] crates;
     private int numOfWalls = 0;
     private int[][] walls;
-    /*To identify the coordinates of player at the start, crates, walls, and the goals*/
+    /*To identify the coordinates of all solid objects that is not an empty space*/
     for(int i = 0; i < height; i++){ 
       for(int j = 0; j < width; j++){
         if(itemsData[i][j] == '@'){ //coordinates of player at start
