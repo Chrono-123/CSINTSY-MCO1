@@ -52,7 +52,7 @@ public class SokoBot {
 
   /*Responsible for the movement of player*/
   public String movement(){
-     while(numOfGoals > 0){
+     while(goals.length() > 0){
         checkWall();
         checkCrate();
         
