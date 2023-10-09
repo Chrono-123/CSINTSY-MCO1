@@ -14,7 +14,7 @@ public class SokoBot {
 
    /*checks if player can move*/
    public void checkWall(){
-      for (int checking = 0; checking < walls.length(); checking++){
+      for (int checking = 0; checking < walls.size(); checking++){
          if (playerCoordinate[0]+move == walls[checking][0]){ //wall right of player
             right = false;
          }
@@ -31,7 +31,7 @@ public class SokoBot {
 
       /*Checks if crates can move*/
       public void checkCrate(){
-         for (int checking = 0; checking < crates.length(); checking++){
+         for (int checking = 0; checking < crates.size(); checking++){
          if (playerCoordinate[0]+move == crates[checking][0]){ //crate right of player
             move = 2;
          }
@@ -102,16 +102,16 @@ public class SokoBot {
           playerCoordinate[1] = i;
         }
         if(itemsData[i][j] == '$'){ //coordinates of crates/boxes
-          crates[crates.length()][0] = j;
-          crates[crates.length()][1] = i;
+          crates[crates.size()][0] = j;
+          crates[crates.size()][1] = i;
         }
         if(mapData[i][j] == '.'){ //coordinates of goals
-          goals[goals.length()][0] = j;
-          goals[goals.length()][1] = i;
+          goals[goals.size()][0] = j;
+          goals[goals.size()][1] = i;
         }
         if(mapData[i][j] == '#'){ //coordinates of walls
-          walls[walls.length()][0] = j;
-          walls[walls.length()][1] = i;
+          walls[walls.size()][0] = j;
+          walls[walls.size()][1] = i;
         }
       }
     }
