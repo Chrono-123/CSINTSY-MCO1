@@ -28,10 +28,11 @@ public class SokoBot {
             down = false;
          }
       }
+   }
 
       /*Checks if crates can move*/
-      public void checkCrate(){
-         for (int checking = 0; checking < crates.length; checking++){
+   public void checkCrate(){
+      for (int checking = 0; checking < crates.length; checking++){
          if (playerCoordinate[0]+move == crates[checking][0]){ //crate right of player
             move = 2;
          }
@@ -48,6 +49,7 @@ public class SokoBot {
             case 2: checkWall();
          }
       }
+   }
       
 
   /*Responsible for the movement of player
