@@ -50,7 +50,14 @@ public class SokoBot {
          }
       }
    }
-      
+
+   public void checkGoal(int[][]crates, int[][] goals){
+      for(int block = 0; block < crates.length; block++){
+         for(int goal = 0; goal < goals.length; goal++){
+            if (crates[block][0] == goals[goal][0] && crates[block][0] == goals[goal][0]){
+               for(int used = 0; used < visited.length; used++){
+                  if (visited[used][0] == 
+   }
 
   /*Responsible for the movement of player
   @param playerCoordinate coordinate of player
@@ -69,6 +76,7 @@ public class SokoBot {
          case 2: left = false;break;
          case 3: right = false; break;
       }
+     checkGoal(crates, goals);
      //Enters the if statements where it can go
       if(up == true){
          playerCoordinate[1]++; //coordinate of player
