@@ -10,7 +10,7 @@ public class SokoBot {
    private int numOfWalls = 0;
    private int[][] walls;
    private boolean up = true, down = true, left = true, right = true;
-   private int move = 1;
+   private int move = 1, prevMove = -1;
 
    /*checks if player can move*/
    public void checkWall(){
@@ -54,21 +54,34 @@ public class SokoBot {
   public String movement(){
       checkWall();
       checkCrate();
+     
+      switch(prevMove){
+         case 0: up = false;break;
+         case 1: down = false;break;
+         case 2: left = false;break;
+         case 3: right = false; break;
+      }
+     
       if(up == true){
          playerCoordinate[1]++;
+         prevMove = 0;
          movement();
       }
       if(down == true){
          playerCoordinate[1]--;
+         prevMove = 1;
          movement();
+         
       }
       if(left == true){
          playerCoordinate[0]--;
+         prevMove = 2;
          movement();
       }
       if(right == true){
-        playerCoordinate[0]++;
-        movement();
+         playerCoordinate[0]++;
+         prevMove = 3;
+         movement();
       }
   }
   public String solveSokobanPuzzle(int width, int height, char[][] mapData, char[][] itemsData) {
