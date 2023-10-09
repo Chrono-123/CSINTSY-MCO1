@@ -55,7 +55,21 @@ public class SokoBot {
      while(goals.length() > 0){
         checkWall();
         checkCrate();
-        
+        if(up == true){
+           playerCoordinate[1]++;
+           movement();
+        }
+        if(down == true){
+           playerCoordinate[1]--;
+           movement();
+        }
+        if(left == true){
+           playerCoordinate[0]--;
+           movement();
+        }
+        if(right == true){
+           playerCoordinate[0]++;
+           movement();
         
      }
   }
