@@ -52,26 +52,24 @@ public class SokoBot {
 
   /*Responsible for the movement of player*/
   public String movement(){
-     while(goals.length() > 0){
-        checkWall();
-        checkCrate();
-        if(up == true){
-           playerCoordinate[1]++;
-           movement();
-        }
-        if(down == true){
-           playerCoordinate[1]--;
-           movement();
-        }
-        if(left == true){
-           playerCoordinate[0]--;
-           movement();
-        }
-        if(right == true){
-           playerCoordinate[0]++;
-           movement();
-        
-     }
+      checkWall();
+      checkCrate();
+      if(up == true){
+         playerCoordinate[1]++;
+         movement();
+      }
+      if(down == true){
+         playerCoordinate[1]--;
+         movement();
+      }
+      if(left == true){
+         playerCoordinate[0]--;
+         movement();
+      }
+      if(right == true){
+        playerCoordinate[0]++;
+        movement();
+      }
   }
   public String solveSokobanPuzzle(int width, int height, char[][] mapData, char[][] itemsData) {
     /*
