@@ -1,7 +1,7 @@
 package solver;
 
 public class SokoBot {
-
+   // Hi I edited.
    private int[2] playerCoordinate;
    private int numOfGoals = 0;
    private int[][] goals;
