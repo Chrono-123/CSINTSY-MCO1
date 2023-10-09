@@ -56,7 +56,8 @@ public class SokoBot {
   @param playerCoordinate coordinate of player
   @param crates array of coordinates of crates
   @param goals array of coordinates of goals
-  @param prevMove checks previous move made (-1 means no previous moves made)*/
+  @param prevMove checks previous move made (-1 means no previous moves made)
+  */
    
   public String movement(int[] playerCoordinate, int[][] crates, int[][] goals, int prevMove){
       checkWall(); //Checks for walls on all possible moves
