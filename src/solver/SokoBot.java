@@ -1,8 +1,8 @@
 package solver;
 
 public class SokoBot {
-   // Hi I edited.
-   private int[2] playerCoordinate;
+//   private int[2] playerCoordinate;
+   private int[] playerCoordinate = new int[2];
    private int numOfGoals = 0;
    private int[][] goals;
    private int numOfCrates = 0;
@@ -10,27 +10,32 @@ public class SokoBot {
    private int numOfWalls = 0;
    private int[][] walls;
    private boolean up = true, down = true, left = true, right = true;
-   private int move = 1, prevMove;
-
+   private int move = 1;
+   
+   // Array indeces
+   private final int X = 0;
+   private final int Y = 1;
+   
    /*checks if player can move*/
-   public void checkWall(){
+   public void checkWall() {
       for (int checking = 0; checking < walls.length; checking++){
-         if (playerCoordinate[0]+move == walls[checking][0]){ //wall right of player
+         if (playerCoordinate[X]+move == walls[checking][X]){ //wall right of player
             right = false;
          }
-         if (playerCoordinate[1]+move == walls[checking][1]){ //wall above player
+         if (playerCoordinate[Y]+move == walls[checking][Y]){ //wall above player
             up = false;
          }
-         if (playerCoordinate[0]-move == walls[checking][0]){ //wall left of player
+         if (playerCoordinate[X]-move == walls[checking][X]){ //wall left of player
             left = false;
          }
-         if (playerCoordinate[1]-move == walls[checking][1]){ //wall below player
+         if (playerCoordinate[Y]-move == walls[checking][Y]){ //wall below player
             down = false;
          }
       }
    }
 
       /*Checks if crates can move*/
+
    public void checkCrate(){
       for (int checking = 0; checking < crates.length; checking++){
          if (playerCoordinate[0]+move == crates[checking][0]){ //crate right of player
@@ -100,6 +105,7 @@ public class SokoBot {
          movement(playerCoordinate, crates, goals, prevMove);
       }
   }
+
   public String solveSokobanPuzzle(int width, int height, char[][] mapData, char[][] itemsData) {
     /*
      * YOU NEED TO REWRITE THE IMPLEMENTATION OF THIS METHOD TO MAKE THE BOT SMARTER
@@ -133,11 +139,13 @@ public class SokoBot {
     }
     prevMove = -1; //signifies that this is the first move to be made by player or that no moves have been previously made
     movement(playerCoordinate, crates, goals, prevMove);
+
     try {
       Thread.sleep(3000);
     } catch (Exception ex) {
       ex.printStackTrace();
     }
+
     return "lrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlr";
   }
 
