@@ -44,44 +44,49 @@ public class SokoBot {
          if (playerCoordinate[1]-move == crates[checking][1]){ //crate below player
             move = 2;
          }
-         switch(move){
+         switch(move){ //to check for walls around the path of the crate
             case 2: checkWall();
          }
       }
       
 
-  /*Responsible for the movement of player*/
-  public String movement(int prevMove){
-      checkWall();
-      checkCrate();
+  /*Responsible for the movement of player
+  @param playerCoordinate coordinate of player
+  @param crates array of coordinates of crates
+  @param goals array of coordinates of goals
+  @param prevMove checks previous move made (-1 means no previous moves made)*/
+   
+  public String movement(int[] playerCoordinate, int[][] crates, int[][] goals, int prevMove){
+      checkWall(); //Checks for walls on all possible moves
+      checkCrate(); //Checks for crates on all possible moves and for walls next to those crates
      
-      switch(prevMove){
+      switch(prevMove){ //Checks for previous moves to avoid repeating moves
          case 0: up = false;break;
          case 1: down = false;break;
          case 2: left = false;break;
          case 3: right = false; break;
       }
-     
+     //Enters the if statements where it can go
       if(up == true){
-         playerCoordinate[1]++;
-         prevMove = 0;
-         movement(prevMove);
+         playerCoordinate[1]++; //coordinate of player
+         prevMove = 0; //lets program know that this was the move made for the next move
+         movement(playerCoordinate, crates, goals, prevMove); //recursion for the next moves
       }
       if(down == true){
          playerCoordinate[1]--;
          prevMove = 1;
-         movement(prevMove);
+         movement(playerCoordinate, crates, goals, prevMove);
          
       }
       if(left == true){
          playerCoordinate[0]--;
          prevMove = 2;
-         movement(prevMove);
+         movement(playerCoordinate, crates, goals, prevMove);
       }
       if(right == true){
          playerCoordinate[0]++;
          prevMove = 3;
-         movement(prevMove);
+         movement(playerCoordinate, crates, goals, prevMove);
       }
   }
   public String solveSokobanPuzzle(int width, int height, char[][] mapData, char[][] itemsData) {
@@ -115,8 +120,8 @@ public class SokoBot {
         }
       }
     }
-    prevMove = -1;
-    movement(prevMove);
+    prevMove = -1; //signifies that this is the first move to be made by player or that no moves have been previously made
+    movement(playerCoordinate, crates, goals, prevMove);
     try {
       Thread.sleep(3000);
     } catch (Exception ex) {
