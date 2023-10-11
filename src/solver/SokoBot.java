@@ -201,8 +201,12 @@ public class SokoBot {
         }
       }
     }
-    prevMove = -1; //signifies that this is the first move to be made by player or that no moves have been previously made
-    movement(playerCoordinate, crates, goals, prevMove);
+    while (int z < 4){
+         executeMove(z);
+         z++;
+    }
+  //  prevMove = -1; //signifies that this is the first move to be made by player or that no moves have been previously made
+  //  movement(playerCoordinate, crates, goals, prevMove);
 
     try {
       Thread.sleep(3000);
