@@ -80,6 +80,7 @@ public class SokoBot {
     }
 
     gamePanel.moves++;
+    gamePanel.repaint();
   }
    
    /*checks if player can move*/
