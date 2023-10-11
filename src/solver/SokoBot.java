@@ -12,7 +12,7 @@ public class SokoBot {
    private int numOfWalls = 0;
    private int[][] walls;
    private boolean up = true, down = true, left = true, right = true;
-   private int move = 1;
+   private int moves = 0;
    private int ptRow = -1;
    private int ptCol = -1;
    private int btRow = -1;
@@ -44,7 +44,6 @@ public class SokoBot {
       this.btRow = playerRow;
       this.btCol = playerColumn + 2;
     }
-    handleMovement(ptRow, ptCol, btRow, btCol);
   }
 
   private void handleMovement(int ptRow, int ptCol, int btRow, int btCol) {
