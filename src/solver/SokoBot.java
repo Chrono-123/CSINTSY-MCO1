@@ -15,6 +15,70 @@ public class SokoBot {
    // Array indeces
    private final int X = 0;
    private final int Y = 1;
+
+    private void executeMove(int direction) {
+    int ptRow = -1;
+    int ptCol = -1;
+    int btRow = -1;
+    int btCol = -1;
+    if (direction == 0) {
+      ptRow = playerRow - 1;
+      ptCol = playerColumn;
+      btRow = playerRow - 2;
+      btCol = playerColumn;
+    } else if (direction == 1) {
+      ptRow = playerRow + 1;
+      ptCol = playerColumn;
+      btRow = playerRow + 2;
+      btCol = playerColumn;
+    } else if (direction == 2) {
+      ptRow = playerRow;
+      ptCol = playerColumn - 1;
+      btRow = playerRow;
+      btCol = playerColumn - 2;
+    } else if (direction == 3) {
+      ptRow = playerRow;
+      ptCol = playerColumn + 1;
+      btRow = playerRow;
+      btCol = playerColumn + 2;
+    }
+    handleMovement(ptRow, ptCol, btRow, btCol);
+  }
+
+  private void handleMovement(int ptRow, int ptCol, int btRow, int btCol) {
+    if (ptRow < 0 || ptRow >= rows || ptCol < 0 || ptCol >= columns) {
+      return;
+    }
+    if (map[ptRow][ptCol] == '#') {
+      return;
+    }
+    if (items[ptRow][ptCol] != '$') {
+      items[playerRow][playerColumn] = ' ';
+      items[ptRow][ptCol] = '@';
+      playerRow = ptRow;
+      playerColumn = ptCol;
+    } else if (items[ptRow][ptCol] == '$') {
+      if (btRow < 0 || btRow >= rows || btCol < 0 || btCol >= columns) {
+        return;
+      }
+      if (map[btRow][btCol] == '#' || items[btRow][btCol] == '$') {
+        return;
+      }
+      if (map[btRow][btCol] == '.') {
+        progress++;
+      }
+      if (map[ptRow][ptCol] == '.') {
+        progress--;
+      }
+      items[btRow][btCol] = '$';
+      items[playerRow][playerColumn] = ' ';
+      items[ptRow][ptCol] = '@';
+      playerRow = ptRow;
+      playerColumn = ptCol;
+    }
+
+    moves++;
+  }
    
    /*checks if player can move*/
    public void checkWall() {
