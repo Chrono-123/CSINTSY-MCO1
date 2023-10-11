@@ -13,16 +13,16 @@ public class SokoBot {
    private int[][] walls;
    private boolean up = true, down = true, left = true, right = true;
    private int move = 1;
+   private int ptRow = -1;
+   private int ptCol = -1;
+   private int btRow = -1;
+   private int btCol = -1;
    
    // Array indeces
    private final int X = 0;
    private final int Y = 1;
 
     private void executeMove(int direction) {
-    int ptRow = -1;
-    int ptCol = -1;
-    int btRow = -1;
-    int btCol = -1;
     if (direction == 0) {
       ptRow = playerRow - 1;
       ptCol = playerColumn;
@@ -47,40 +47,40 @@ public class SokoBot {
     handleMovement(ptRow, ptCol, btRow, btCol);
   }
 
-  private void handleMovement(int ptRow, int ptCol, int btRow, int btCol, GamePanel gamePanel) {
+  private void handleMovement(int ptRow, int ptCol, int btRow, int btCol) {
     if (ptRow < 0 || ptRow >= rows || ptCol < 0 || ptCol >= columns) {
       return;
     }
-    if (gamePanel.map[ptRow][ptCol] == '#') {
+    if (map[ptRow][ptCol] == '#') {
       return;
     }
-    if (gamePanel.items[ptRow][ptCol] != '$') {
-      gamePanel.items[playerRow][playerColumn] = ' ';
-      gamePanel.items[ptRow][ptCol] = '@';
-      gamePanel.playerRow = ptRow;
-      gamePanel.playerColumn = ptCol;
-    } else if (gamePanel.items[ptRow][ptCol] == '$') {
+    if (items[ptRow][ptCol] != '$') {
+      items[playerRow][playerColumn] = ' ';
+      items[ptRow][ptCol] = '@';
+      playerRow = ptRow;
+      playerColumn = ptCol;
+    } else if (items[ptRow][ptCol] == '$') {
       if (btRow < 0 || btRow >= rows || btCol < 0 || btCol >= columns) {
         return;
       }
-      if (gamePanel.map[btRow][btCol] == '#' || items[btRow][btCol] == '$') {
+      if (map[btRow][btCol] == '#' || items[btRow][btCol] == '$') {
         return;
       }
-      if (gamePanel.map[btRow][btCol] == '.') {
-        gamePanel.progress++;
+      if (map[btRow][btCol] == '.') {
+        progress++;
       }
-      if (gamePanel.map[ptRow][ptCol] == '.') {
-        gamePanel.progress--;
+      if (map[ptRow][ptCol] == '.') {
+        progress--;
       }
-      gamePanel.items[btRow][btCol] = '$';
-      gamePanel.items[playerRow][playerColumn] = ' ';
-      gamePanel.items[ptRow][ptCol] = '@';
-      gamePanel.playerRow = ptRow;
-      gamePanel.playerColumn = ptCol;
+      items[btRow][btCol] = '$';
+      items[playerRow][playerColumn] = ' ';
+      items[ptRow][ptCol] = '@';
+      playerRow = ptRow;
+      playerColumn = ptCol;
     }
 
-    gamePanel.moves++;
-    gamePanel.repaint();
+    moves++;
+    repaint();
   }
   
    /*checks if player can move
@@ -184,7 +184,7 @@ public class SokoBot {
      * that just moves left and right repeatedly.
      */
    
-    /*To identify the coordinates of all solid objects that is not an empty space*/
+    /*To identify the coordinates of all solid objects that is not an empty space
     for(int i = 0; i < height; i++){ 
       for(int j = 0; j < width; j++){
         if(itemsData[i][j] == '@'){ //coordinates of player at start
@@ -204,7 +204,7 @@ public class SokoBot {
           walls[walls.length][1] = i;
         }
       }
-    }
+    }*/
     while (int z < 4){
          executeMove(z);
          z++;
