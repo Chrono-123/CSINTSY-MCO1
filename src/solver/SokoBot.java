@@ -1,5 +1,7 @@
 package solver;
 
+import gui.GamePanel;
+
 public class SokoBot {
 //   private int[2] playerCoordinate;
    private int[] playerCoordinate = new int[2];
