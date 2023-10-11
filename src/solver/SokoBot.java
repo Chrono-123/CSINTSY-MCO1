@@ -59,27 +59,27 @@ public class SokoBot {
       gamePanel.items[ptRow][ptCol] = '@';
       gamePanel.playerRow = ptRow;
       gamePanel.playerColumn = ptCol;
-    } else if (items[ptRow][ptCol] == '$') {
+    } else if (gamePanel.items[ptRow][ptCol] == '$') {
       if (btRow < 0 || btRow >= rows || btCol < 0 || btCol >= columns) {
         return;
       }
-      if (map[btRow][btCol] == '#' || items[btRow][btCol] == '$') {
+      if (gamePanel.map[btRow][btCol] == '#' || items[btRow][btCol] == '$') {
         return;
       }
-      if (map[btRow][btCol] == '.') {
-        progress++;
+      if (gamePanel.map[btRow][btCol] == '.') {
+        gamePanel.progress++;
       }
-      if (map[ptRow][ptCol] == '.') {
-        progress--;
+      if (gamePanel.map[ptRow][ptCol] == '.') {
+        gamePanel.progress--;
       }
-      items[btRow][btCol] = '$';
-      items[playerRow][playerColumn] = ' ';
-      items[ptRow][ptCol] = '@';
-      playerRow = ptRow;
-      playerColumn = ptCol;
+      gamePanel.items[btRow][btCol] = '$';
+      gamePanel.items[playerRow][playerColumn] = ' ';
+      gamePanel.items[ptRow][ptCol] = '@';
+      gamePanel.playerRow = ptRow;
+      gamePanel.playerColumn = ptCol;
     }
 
-    moves++;
+    gamePanel.moves++;
   }
    
    /*checks if player can move*/
