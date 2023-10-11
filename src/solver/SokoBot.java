@@ -82,8 +82,8 @@ public class SokoBot {
     gamePanel.moves++;
     gamePanel.repaint();
   }
-   
-   /*checks if player can move*/
+  
+   /*checks if player can move
    public void checkWall() {
       for (int checking = 0; checking < walls.length; checking++){
          if (playerCoordinate[X]+move == walls[checking][X]){ //wall right of player
@@ -100,8 +100,8 @@ public class SokoBot {
          }
       }
    }
-
-      /*Checks if crates can move*/
+*/
+      /*Checks if crates can move
 
    public void checkCrate(){
       for (int checking = 0; checking < crates.length; checking++){
@@ -137,7 +137,7 @@ public class SokoBot {
   @param goals array of coordinates of goals
   @param prevMove checks previous move made (-1 means no previous moves made)
   */
-   
+   /*
   public String movement(int[] playerCoordinate, int[][] crates, int[][] goals, int prevMove){
       checkWall(); //Checks for walls on all possible moves
       checkCrate(); //Checks for crates on all possible moves and for walls next to those crates
@@ -173,6 +173,7 @@ public class SokoBot {
       }
   }
 
+*/
   public String solveSokobanPuzzle(int width, int height, char[][] mapData, char[][] itemsData) {
     /*
      * YOU NEED TO REWRITE THE IMPLEMENTATION OF THIS METHOD TO MAKE THE BOT SMARTER
