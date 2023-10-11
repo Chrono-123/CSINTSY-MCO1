@@ -80,7 +80,7 @@ public class SokoBot {
     }
 
     moves++;
-    repaint();
+    handleMovement(ptRow, ptCol, btRow, btCol);
   }
   
    /*checks if player can move
@@ -207,6 +207,7 @@ public class SokoBot {
     }*/
     while (int z < 4){
          executeMove(z);
+         handleMovement(ptRow, ptCol, btRow, btCol);
          z++;
     }
   //  prevMove = -1; //signifies that this is the first move to be made by player or that no moves have been previously made
