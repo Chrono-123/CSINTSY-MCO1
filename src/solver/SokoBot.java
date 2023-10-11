@@ -24,25 +24,25 @@ public class SokoBot {
 
     private void executeMove(int direction) {
     if (direction == 0) {
-      ptRow = playerRow - 1;
-      ptCol = playerColumn;
-      btRow = playerRow - 2;
-      btCol = playerColumn;
+      this.ptRow = playerRow - 1;
+      this.ptCol = playerColumn;
+      this.btRow = playerRow - 2;
+      this.btCol = playerColumn;
     } else if (direction == 1) {
-      ptRow = playerRow + 1;
-      ptCol = playerColumn;
-      btRow = playerRow + 2;
-      btCol = playerColumn;
+      this.ptRow = playerRow + 1;
+      this.ptCol = playerColumn;
+      this.btRow = playerRow + 2;
+      this.btCol = playerColumn;
     } else if (direction == 2) {
-      ptRow = playerRow;
-      ptCol = playerColumn - 1;
-      btRow = playerRow;
-      btCol = playerColumn - 2;
+      this.ptRow = playerRow;
+      this.ptCol = playerColumn - 1;
+      this.btRow = playerRow;
+      this.btCol = playerColumn - 2;
     } else if (direction == 3) {
-      ptRow = playerRow;
-      ptCol = playerColumn + 1;
-      btRow = playerRow;
-      btCol = playerColumn + 2;
+      this.ptRow = playerRow;
+      this.ptCol = playerColumn + 1;
+      this.btRow = playerRow;
+      this.btCol = playerColumn + 2;
     }
     handleMovement(ptRow, ptCol, btRow, btCol);
   }
