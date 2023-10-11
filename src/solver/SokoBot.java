@@ -47,18 +47,18 @@ public class SokoBot {
     handleMovement(ptRow, ptCol, btRow, btCol);
   }
 
-  private void handleMovement(int ptRow, int ptCol, int btRow, int btCol) {
+  private void handleMovement(int ptRow, int ptCol, int btRow, int btCol, GamePanel gamePanel) {
     if (ptRow < 0 || ptRow >= rows || ptCol < 0 || ptCol >= columns) {
       return;
     }
-    if (GamePanel.map[ptRow][ptCol] == '#') {
+    if (gamePanel.map[ptRow][ptCol] == '#') {
       return;
     }
-    if (items[ptRow][ptCol] != '$') {
-      items[playerRow][playerColumn] = ' ';
-      items[ptRow][ptCol] = '@';
-      playerRow = ptRow;
-      playerColumn = ptCol;
+    if (gamePanel.items[ptRow][ptCol] != '$') {
+      gamePanel.items[playerRow][playerColumn] = ' ';
+      gamePanel.items[ptRow][ptCol] = '@';
+      gamePanel.playerRow = ptRow;
+      gamePanel.playerColumn = ptCol;
     } else if (items[ptRow][ptCol] == '$') {
       if (btRow < 0 || btRow >= rows || btCol < 0 || btCol >= columns) {
         return;
