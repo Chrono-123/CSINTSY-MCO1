@@ -51,7 +51,7 @@ public class SokoBot {
     if (ptRow < 0 || ptRow >= rows || ptCol < 0 || ptCol >= columns) {
       return;
     }
-    if (map[ptRow][ptCol] == '#') {
+    if (GamePanel.map[ptRow][ptCol] == '#') {
       return;
     }
     if (items[ptRow][ptCol] != '$') {
