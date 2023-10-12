@@ -76,5 +76,11 @@ public class SokoBot {
 		int[] playerPos = getPosOfChar(itemsData, '@');
 		
 		return search(width, height, mapData, itemsData, playerPos, "");
+		try {
+      			Thread.sleep(3000);
+    		} catch (Exception ex) {
+      			ex.printStackTrace();
+    		}
+    		return "lrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlr";
 	}
 }
