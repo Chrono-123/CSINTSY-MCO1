@@ -41,6 +41,9 @@ public class SokoBot {
 		// Check if it's a space or a goal. Whatever you can go through
 		if (mapData[y][x] == ' ' || mapData[y][x] == '.')
 			return true;
+		else if (mapData[y][x] == '$'){
+			
+		}
 		// It's a wall
 		else 
 			return false;
