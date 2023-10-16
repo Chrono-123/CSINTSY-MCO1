@@ -39,10 +39,11 @@ public class SokoBot {
 		int x = position[X];
 		int y = position[Y];
 		// Check if it's a space or a goal. Whatever you can go through
-		if (mapData[y][x] == ' ' || mapData[y][x] == '.')
+		if (mapData[y][x] == ' ' || mapData[y][x] == '.'){
 			return true;
+		}
 		else if (mapData[y][x] == '$'){
-			
+			//if crate, check the next if its space or goal
 		}
 		// It's a wall
 		else 
