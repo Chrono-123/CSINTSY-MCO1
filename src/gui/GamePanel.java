@@ -107,24 +107,24 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
             map[i][j] = '#';
             items[i][j] = ' ';
             break;
-          case '@':
+          case '@': // Player
             map[i][j] = ' ';
             items[i][j] = '@';
             playerCount++;
             playerRow = i;
             playerColumn = j;
             break;
-          case '$':
+          case '$': // Crate
             map[i][j] = ' ';
             items[i][j] = '$';
             boxCount++;
             break;
-          case '.':
+          case '.': // Goal
             map[i][j] = '.';
             items[i][j] = ' ';
             goalCount++;
             break;
-          case '+':
+          case '+': // Player on Goal
             map[i][j] = '.';
             items[i][j] = '@';
             playerRow = i;
@@ -132,14 +132,14 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
             playerCount++;
             goalCount++;
             break;
-          case '*':
+          case '*': // Crate on Goal
             map[i][j] = '.';
             items[i][j] = '$';
             boxCount++;
             goalCount++;
             progress++;
             break;
-          case ' ':
+          case ' ': // Empty
             map[i][j] = ' ';
             items[i][j] = ' ';
             break;
