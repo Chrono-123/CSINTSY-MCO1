@@ -1,7 +1,5 @@
 package solver;
 
-import gui.GamePanel;
-
 public class SokoBot {
 	// Array indexes for position
 	private final int X = 0;
@@ -46,8 +44,7 @@ public class SokoBot {
 			//if crate, check the next if its space or goal
 		}
 		// It's a wall
-		else 
-			return false;
+		return false;
 	}
 	
 	public String search(int width, int height, 
@@ -80,18 +77,12 @@ public class SokoBot {
 		int[] playerPos = getPosOfChar(itemsData, '@');
 		long startTime = System.currentTimeMillis();
 		long elapsedTime = System.currentTimeMillis() - startTime;
+		
 		if (elapsedTime <= 15000){
-			return search(width, height, mapData, itemsData, playerPos, "");
+			return search(width, height, mapData, itemsData, playerPos, "l");
 		}
 		else{
 			return "lrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlr";
 		}
-		
-		try {
-      			Thread.sleep(3000);
-    		} catch (Exception ex) {
-      			ex.printStackTrace();
-    		}
-    		return "lrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlr";
 	}
 }
