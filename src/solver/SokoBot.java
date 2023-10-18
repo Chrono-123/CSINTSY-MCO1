@@ -177,11 +177,13 @@ public class SokoBot {
 		}
 		
 		// Check if it is a wall or outside of the board
-		if (mapData[destY][destX] == WALL && !withinBoundary(destY, destX))
+		if (mapData[destY][destX] == WALL || !withinBoundary(destY, destX))
 			return newItemsData;
 		
-		newItemsData[originY][originX] = ' ';
-		newItemsData[destY][destX] = item;
+		if (item == PLAYER && itemsData[destY][destX] != GOAL) {
+			newItemsData[originY][originX] = ' ';
+			newItemsData[destY][destX] = item;
+		}
 		
 		return newItemsData;
 	}
