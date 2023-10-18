@@ -85,6 +85,7 @@ public class SokoBot {
 		}
 		catch (Thread.sleep(15000)){
 			return "lrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlr";
+		}
 		try {
       			Thread.sleep(3000);
     		} catch (Exception ex) {
