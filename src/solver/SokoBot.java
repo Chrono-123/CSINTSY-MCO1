@@ -78,14 +78,15 @@ public class SokoBot {
 	
 	public String solveSokobanPuzzle(int width, int height, char[][] mapData, char[][] itemsData) {
 		int[] playerPos = getPosOfChar(itemsData, '@');
-		
-		
-		try{
+		long startTime = System.currentTimeMillis();
+		long elapsedTime = System.currentTimeMillis() - startTime;
+		if (elapsedTime <= 15000){
 			return search(width, height, mapData, itemsData, playerPos, "");
 		}
-		catch (Thread.sleep(15000)){
+		else{
 			return "lrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlr";
 		}
+		
 		try {
       			Thread.sleep(3000);
     		} catch (Exception ex) {
