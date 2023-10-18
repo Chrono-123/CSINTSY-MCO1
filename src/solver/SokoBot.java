@@ -160,17 +160,17 @@ public class SokoBot {
 	 * is when it is called recursively. The recursion only occurs when the
 	 * player pushes the block.
 	 * */
-	private char[][] moveItem(char[][] itemsData, char[][] mapData
+	private char[][] moveItem(char[][] itemsData, char[][] mapData,
 							 int[] dest, int[] origin, char item) {
 		int destX =   dest[X];
-		int destY=   dest[Y];
+		int destY =   dest[Y];
 		int originX = origin[X];
 		int originY = origin[Y];
 		
-		int[][] newItemsData = itemsData;
+		char[][] newItemsData = itemsData;
 		
 		if (itemsData[destY][destX] == GOAL) {
-			int[] newPos = destPosition;
+			int[] newPos = dest;
 			newPos[X] += destX - originX;
 			newPos[Y] += destY - originY;
 			moveItem(itemsData, mapData, newPos, dest, GOAL);
@@ -206,7 +206,6 @@ public class SokoBot {
 		
 		int[] playerPos = getPosOfChar(itemsData, '@');
 		listAllGoals(mapData);
-		output = "";
-		return output;
+		return "lrlrlrlrlrlr";
 	}
 }
