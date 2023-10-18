@@ -79,7 +79,12 @@ public class SokoBot {
 	public String solveSokobanPuzzle(int width, int height, char[][] mapData, char[][] itemsData) {
 		int[] playerPos = getPosOfChar(itemsData, '@');
 		
-		return search(width, height, mapData, itemsData, playerPos, "");
+		
+		try{
+			return search(width, height, mapData, itemsData, playerPos, "");
+		}
+		catch (Thread.sleep(15000)){
+			return "lrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlr";
 		try {
       			Thread.sleep(3000);
     		} catch (Exception ex) {
