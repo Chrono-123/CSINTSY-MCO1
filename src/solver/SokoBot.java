@@ -1,6 +1,8 @@
 package solver;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SokoBot {
 	// Array indexes for position
@@ -13,14 +15,34 @@ public class SokoBot {
 	private final char WALL = '#';
 	private final char GOAL = '.';
 	
-	
 	// Grid dimension
 	private int width;
 	private int height;
 	
-	ArrayList<int[]> listGoals = new ArrayList();
+	private char[][] goalItemsData;
 	
-	private boolean isCompleted(char[][] mapData, char[][] itemsData) {
+	private State startState;
+	private State goalState;
+	
+	
+	private ArrayList<State> pathway = new ArrayList();
+	private HashMap<char[][], String> storage;
+	
+	private String output = "";
+	
+//	private boolean isCompleted(char[][] mapData, char[][] itemsData) {
+//		for (int i = 0; i < mapData.length; i++) {
+//			for (int j = 0; j < mapData[i].length; j++) {
+//				if (mapData[i][j] == GOAL && itemsData[i][j] != CRATE)
+//					return false;
+//			}
+//		}
+//		return true;
+//	}
+	private boolean isGoalState(State state) {
+		char[][] mapData = state.getMapData();
+		char[][] itemsData = state.getItemsData();
+		
 		for (int i = 0; i < mapData.length; i++) {
 			for (int j = 0; j < mapData[i].length; j++) {
 				if (mapData[i][j] == GOAL && itemsData[i][j] != CRATE)
@@ -73,17 +95,6 @@ public class SokoBot {
 		
 		return position;
 	}
-
-	private void listAllGoals(char[][] mapData) {
-		for (int i = 0; i < mapData.length; i++) {
-			for (int j = 0; j < mapData[i].length; j++) {
-				int[] goalPos = new int[2];
-				goalPos[X] = j;
-				goalPos[Y] = i;
-				listGoals.add(goalPos);
-			}
-		}
-	}
 	
 	/**
 	 * Check for a space in a direction
@@ -123,36 +134,12 @@ public class SokoBot {
 		y = newPosition[Y];
 		
 		// Check again if there is a crate in the same direction
-		if (itemsData[y][x] == CRATE)
-			checkSpace(mapData, itemsData, direction, newPosition);
+		if (itemsData[y][x] == CRATE) {
+			return checkSpace(mapData, itemsData, direction, newPosition);			
+		}
 		
 		// Check if it's a space or a goal. Whatever you can go through
 		return (mapData[y][x] == ' ' || mapData[y][x] == '.');
-	}
-	
-	
-	/**
-	 * This is going to be our heuristic function ;)))
-	 * @param posCrate  position of specific crate
-	 * 
-	 * @return distance to a nearest goal
-	 * */
-	private double distCrate(int[] posCrate) {
-		// Find nearest goal
-		double distance = 9999;
-		
-		// ArrayList<int[]> listGoals = new ArrayList();
-		for (int[] goalPos : listGoals) {
-			// Pythagorean, bby
-			double measureDist = 
-					Math.sqrt(Math.pow(posCrate[X] - goalPos[X], 2) + 
-							  Math.pow(posCrate[Y] - goalPos[Y], 2));
-			if (measureDist < distance) {
-				distance = measureDist;
-			}
-		}
-		
-		return distance;
 	}
 	
 	/**
@@ -199,15 +186,34 @@ public class SokoBot {
 			   (row < height) && (col < width);
 	}
 	
+	private void generateTree(State state) {
+		if (goalState != null || ) {
+			return;
+		}
+		
+		state.addNextState(new State());
+	}
 	
+	private void generateGoalItemsData(char[][] mapData) {
+		for (int i = 0; i < mapData.length; i++) {
+			for (int j = 0; j < mapData[i].length; j++) {
+				if (mapData[i][j] == GOAL) {
+					goalItemsData[i][j] = CRATE;
+				}
+			}
+		}
+	}
 	
 	public String solveSokobanPuzzle(int width, int height, char[][] mapData, 
 									 char[][] itemsData) {
 		this.width = width;
 		this.height = height;
+		startState = new State(itemsData, mapData);
 		
-		int[] playerPos = getPosOfChar(itemsData, '@');
-		listAllGoals(mapData);
+		goalItemsData = itemsData;
+		generateGoalItemsData(mapData);
+		
+		generateTree(startState);
 		return "lrlrlrlrlrlr";
 	}
 }
