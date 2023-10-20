@@ -19,7 +19,7 @@ public class SokoBot {
 
 	private static final Logger logger = Logger.getLogger(BotThread.class.getName());
 
-	
+
 	private static final int[][] DIRECTIONS = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
 	private static final char[] DIRECTION_CHARS = {'r', 'd', 'l', 'u'};
 
@@ -55,6 +55,39 @@ public class SokoBot {
 		}
 	}
 
+
+
+	private boolean[][] detectBottlenecks(char[][] mapData) {
+		int width = mapData[0].length;
+		int height = mapData.length;
+		boolean[][] isBottleneck = new boolean[height][width];
+
+		// Iterate through the map to identify bottlenecks
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
+				// Check if the tile at (x, y) contributes to a bottleneck
+				if (isNarrowCorridor(x, y, mapData)) {
+					isBottleneck[y][x] = true;
+				}
+			}
+		}
+		return isBottleneck;
+	}
+
+	private boolean isNarrowCorridor(int x, int y, char[][] mapData) {
+		// Implement logic to check if (x, y) is part of a narrow corridor
+		// For example, check if there are only two available adjacent tiles
+		int adjacentTiles = 0;
+		if (mapData[y][x + 1] == ' ') adjacentTiles++;
+		if (mapData[y][x - 1] == ' ') adjacentTiles++;
+		if (mapData[y + 1][x] == ' ') adjacentTiles++;
+		if (mapData[y - 1][x] == ' ') adjacentTiles++;
+
+		return adjacentTiles == 2;
+	}
+
+
+
 	private int calculateMoveScore(State state, char[][] mapData) {
 		int score = 0;
 
@@ -71,8 +104,16 @@ public class SokoBot {
 		}
 
 		// Bottleneck Clearing:
-		// You can implement logic to identify bottlenecks in the puzzle and prioritize moves that help clear bottlenecks.
-		// This may involve analyzing the map to detect narrow passages and choosing moves that widen them.
+		boolean[][] bottlenecks = detectBottlenecks(mapData);
+
+		// Prioritize moves that help clear bottlenecks
+		int playerX = state.playerX;
+		int playerY = state.playerY;
+
+		if (bottlenecks[playerY][playerX]) {
+			// If the player is in a bottleneck, prioritize clearing it
+			score -= 100; // You can adjust the score penalty as needed
+		}
 
 		// Goal-Reaching Moves:
 		// You can prioritize moves that bring the player closer to crates and goals or moves that push crates towards goals.
@@ -82,10 +123,11 @@ public class SokoBot {
 		return score;
 	}
 
+
 	private int manhattanDistance(int x1, int y1, int x2, int y2) {
 		return Math.abs(x1 - x2) + Math.abs(y1 - y2);
 	}
-	
+
 
 	private int calculateDistanceToNearestGoal(int x, int y, char[][] mapData) {
 		int shortestDistance = Integer.MAX_VALUE;
@@ -113,11 +155,11 @@ public class SokoBot {
 		}
 		return true;
 	}
-	
+
 
 	private int heuristic(State state, char[][] mapData) {
 		int totalDistance = 0;
-	
+
 		// Calculate the player's distance to the nearest goals
 		int playerDistance = Integer.MAX_VALUE;
 		for (int y = 0; y < mapData.length; y++) {
@@ -128,15 +170,15 @@ public class SokoBot {
 				}
 			}
 		}
-	
+
 		totalDistance += playerDistance;
-	
+
 		// Calculate the crates' distance to the nearest goals
 		for (String cratePos : state.cratePositions) {
 			String[] parts = cratePos.split(",");
 			int crateX = Integer.parseInt(parts[0]);
 			int crateY = Integer.parseInt(parts[1]);
-	
+
 			int shortestDistance = Integer.MAX_VALUE;
 			for (int y = 0; y < mapData.length; y++) {
 				for (int x = 0; x < mapData[0].length; x++) {
@@ -148,20 +190,20 @@ public class SokoBot {
 			}
 			totalDistance += shortestDistance;
 		}
-	
+
 		// Calculate the player's distance to the nearest crate
 		int playerToCrateDistance = calculateDistanceToNearestCrate(state.playerX, state.playerY, state.cratePositions);
-	
+
 		// Calculate distances between crates (optional)
 		int crateToCrateDistance = calculateDistanceBetweenCrates(state.cratePositions);
-	
+
 		// Add these additional factors to the total heuristic score
 		totalDistance += playerToCrateDistance;
 		totalDistance += crateToCrateDistance;
-	
+
 		return totalDistance;
 	}
-	
+
 
 	private int calculateDistanceToNearestCrate(int playerX, int playerY, Set<String> cratePositions) {
 		int shortestDistance = Integer.MAX_VALUE;
@@ -273,12 +315,12 @@ public class SokoBot {
 		while (current.parent != null) {
 			State currentState = current.state;
 			State previousState = current.parent.state;
-		
+
 			// Determine the move that led to the current state
 			int dx = currentState.playerX - previousState.playerX;
 			int dy = currentState.playerY - previousState.playerY;
 			char move = ' '; // Initialize move as empty
-			
+
 			if (dx == 1) {
 				move = 'l'; // Player moved left
 			} else if (dx == -1) {
@@ -288,17 +330,17 @@ public class SokoBot {
 			} else if (dy == -1) {
 				move = 'd'; // Player moved down
 			}
-		
+
 			path.insert(0, move);  // Insert the move at the beginning of the path
 			current = current.parent;
 		}
-		
+
 		return path.toString();
 	}
 
 
 
-	
+
 
 
 
@@ -366,7 +408,7 @@ public class SokoBot {
 			// Add this line to print the current game state
             printGameState(mapData, currentState);
 
-			
+
 			if (isGoalState(currentState, mapData)) {
 				return reconstructPath(currentNode);
 			}
