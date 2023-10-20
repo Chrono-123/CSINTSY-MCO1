@@ -1,5 +1,4 @@
 package solver;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -97,6 +96,7 @@ public class SokoBot {
 		}
 		
 		// Check if it's a space or a goal. Whatever you can go through
+
 		return (mapData[y][x] == ' ' || mapData[y][x] == '.');
 	}
 	
@@ -127,7 +127,7 @@ public class SokoBot {
 		
 		state.addNextState();
 	}
-	
+
 	private void generateGoalItemsData(char[][] mapData) {
 		for (int i = 0; i < mapData.length; i++) {
 			for (int j = 0; j < mapData[i].length; j++) {
@@ -149,5 +149,6 @@ public class SokoBot {
 		
 		generateTree(startState);
 		return "lrlrlrlrlrlr";
+
 	}
 }
