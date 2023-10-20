@@ -6,14 +6,14 @@ import java.util.Map;
 
 public class SokoBot {
 	// Array indexes for position
-	private final int X = 0;
-	private final int Y = 1;
+	public final static int X = 0;
+	public final static int Y = 1;
 	
 	// Character representation of each object
-	private final char PLAYER = '@';
-	private final char CRATE = '$';
-	private final char WALL = '#';
-	private final char GOAL = '.';
+	public final static char PLAYER = '@';
+	public final static char CRATE = '$';
+	public final static char WALL = '#';
+	public final static char GOAL = '.';
 	
 	// Grid dimension
 	private int width;
@@ -52,49 +52,7 @@ public class SokoBot {
 		return true;
 	}
 	
-	/**
-	 * Get the position of a character in either a mapData or itemsData
-	 * 
-	 * @param data    mapData or itemsData
-	 * @param target  what character to search
-	 * 
-	 * @return array of size 2 that stores position data
-	 * 		   position[0] = x coordinate 
-	 * 		   position[1] = y coordinate
-	 * 		   
-	 * 		   Use constants for index:
-	 * 				X = 0
-	 * 				Y = 1
-	 * 			
-	 * 		   e.g.
-	 * 				position[X], position[Y]
-	 * */
-	private int[] getPosOfChar(char[][] data, char target) {
-		int position[] = new int[2];
-
-		/*****************************
-		 * Note:
-		 * Going through *rows* means changing *y* coordinates, and
-		 * Going through *columns* means changing *x* coordinates.
-		 * 
-		 * Therefore, accessing array element with x and y goes like this:
-		 * 		data[y][x]
-		 ***************************** 
-		 */
-		// Rows (y)
-		for (int y = 0; y < data.length; y++) {
-			// Columns (x)
-			for (int x = 0; x < data[y].length; x++) {
-				if (data[y][x] == target) {
-					position[X] = x;
-					position[Y] = y;
-					break;
-				}
-			}
-		}
-		
-		return position;
-	}
+	
 	
 	/**
 	 * Check for a space in a direction
@@ -106,7 +64,7 @@ public class SokoBot {
 	 * 
 	 * @return distance to a nearest goal
 	 * */
-	private boolean checkSpace(char[][] mapData, char[][] itemsData, 
+	public static boolean checkSpace(char[][] mapData, char[][] itemsData, 
 							   Direction direction, int[] origin) {
 		int x = origin[X];
 		int y = origin[Y];
@@ -147,33 +105,7 @@ public class SokoBot {
 	 * is when it is called recursively. The recursion only occurs when the
 	 * player pushes the block.
 	 * */
-	private char[][] moveItem(char[][] itemsData, char[][] mapData,
-							 int[] dest, int[] origin, char item) {
-		int destX =   dest[X];
-		int destY =   dest[Y];
-		int originX = origin[X];
-		int originY = origin[Y];
-		
-		char[][] newItemsData = itemsData;
-		
-		if (itemsData[destY][destX] == GOAL) {
-			int[] newPos = dest;
-			newPos[X] += destX - originX;
-			newPos[Y] += destY - originY;
-			moveItem(itemsData, mapData, newPos, dest, GOAL);
-		}
-		
-		// Check if it is a wall or outside of the board
-		if (mapData[destY][destX] == WALL || !withinBoundary(destY, destX))
-			return newItemsData;
-		
-		if (item == PLAYER && itemsData[destY][destX] != GOAL) {
-			newItemsData[originY][originX] = ' ';
-			newItemsData[destY][destX] = item;
-		}
-		
-		return newItemsData;
-	}
+	
 	
 	/**
 	 * Check whether the position is within the board
@@ -187,11 +119,13 @@ public class SokoBot {
 	}
 	
 	private void generateTree(State state) {
-		if (goalState != null || ) {
+		if (goalState != null || storage.containsKey(state.getItemsData())) {
 			return;
 		}
 		
-		state.addNextState(new State());
+		State upState = new State
+		
+		state.addNextState();
 	}
 	
 	private void generateGoalItemsData(char[][] mapData) {
