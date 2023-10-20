@@ -1,88 +1,154 @@
 package solver;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SokoBot {
 	// Array indexes for position
-	private final int X = 0;
-	private final int Y = 1;
+	public final static int X = 0;
+	public final static int Y = 1;
 	
-	private int[] getPosOfChar(char[][] data, char target) {
-		int position[] = new int[2];
+	// Character representation of each object
+	public final static char PLAYER = '@';
+	public final static char CRATE = '$';
+	public final static char WALL = '#';
+	public final static char GOAL = '.';
+	
+	// Grid dimension
+	private int width;
+	private int height;
+	
+	private char[][] goalItemsData;
+	
+	private State startState;
+	private State goalState;
+	
+	
+	private ArrayList<State> pathway = new ArrayList();
+	private HashMap<char[][], String> storage;
+	
+	private String output = "";
+	
+//	private boolean isCompleted(char[][] mapData, char[][] itemsData) {
+//		for (int i = 0; i < mapData.length; i++) {
+//			for (int j = 0; j < mapData[i].length; j++) {
+//				if (mapData[i][j] == GOAL && itemsData[i][j] != CRATE)
+//					return false;
+//			}
+//		}
+//		return true;
+//	}
+	private boolean isGoalState(State state) {
+		char[][] mapData = state.getMapData();
+		char[][] itemsData = state.getItemsData();
+		
+		for (int i = 0; i < mapData.length; i++) {
+			for (int j = 0; j < mapData[i].length; j++) {
+				if (mapData[i][j] == GOAL && itemsData[i][j] != CRATE)
+					return false;
+			}
+		}
+		return true;
+	}
+	
+	
+	
+	/**
+	 * Check for a space in a direction
+	 * 
+	 * @param mapData   map data
+	 * @param itemsData item data
+	 * @param direction what direction the player is facing
+	 * @param origin    position of the player or something else
+	 * 
+	 * @return distance to a nearest goal
+	 * */
+	public static boolean checkSpace(char[][] mapData, char[][] itemsData, 
+							   Direction direction, int[] origin) {
+		int x = origin[X];
+		int y = origin[Y];
+		
+		int[] newPosition = origin;
+		switch (direction) {
+		case NORTH:
+			newPosition[Y] -= 1;
+			break;
+		
+		case SOUTH:
+			newPosition[Y] += 1;
+			break;
+		
+		case EAST:
+			newPosition[X] -= 1;
+			break;
+		
+		case WEST:
+			newPosition[X] += 1;
+			break;
+		}
+		
+		x = newPosition[X];
+		y = newPosition[Y];
+		
+		// Check again if there is a crate in the same direction
+		if (itemsData[y][x] == CRATE) {
+			return checkSpace(mapData, itemsData, direction, newPosition);			
+		}
+		
+		// Check if it's a space or a goal. Whatever you can go through
 
-		/*****************************
-		 * Note:
-		 * Going through *rows* means changing *y* coordinates, and
-		 * Going through *columns* means changing *x* coordinates.
-		 * 
-		 * Therefore, accessing array element with x and y goes like this:
-		 * 		data[y][x]
-		 ***************************** 
-		 */
-		// Rows (y)
-		for (int y = 0; y < data.length; y++) {
-			// Columns (x)
-			for (int x = 0; x < data[y].length; x++) {
-				if (data[y][x] == target) {
-					position[X] = x;
-					position[Y] = y;
-					break;
+		return (mapData[y][x] == ' ' || mapData[y][x] == '.');
+	}
+	
+	/**
+	 * Moves an item. Usually used with player. Only time the item is a crate
+	 * is when it is called recursively. The recursion only occurs when the
+	 * player pushes the block.
+	 * */
+	
+	
+	/**
+	 * Check whether the position is within the board
+	 * 
+	 * @return true - within board
+	 * 		   false - outside board
+	 * */
+	private boolean withinBoundary(int row, int col) {
+		return (row > 0) && (col > 0) &&
+			   (row < height) && (col < width);
+	}
+	
+	private void generateTree(State state) {
+		if (goalState != null || storage.containsKey(state.getItemsData())) {
+			return;
+		}
+		
+		State upState = new State
+		
+		state.addNextState();
+	}
+
+	private void generateGoalItemsData(char[][] mapData) {
+		for (int i = 0; i < mapData.length; i++) {
+			for (int j = 0; j < mapData[i].length; j++) {
+				if (mapData[i][j] == GOAL) {
+					goalItemsData[i][j] = CRATE;
 				}
 			}
 		}
-		
-		return position;
 	}
+	
+	public String solveSokobanPuzzle(int width, int height, char[][] mapData, 
+									 char[][] itemsData) {
+		this.width = width;
+		this.height = height;
+		startState = new State(itemsData, mapData);
+		
+		goalItemsData = itemsData;
+		generateGoalItemsData(mapData);
+		
+		generateTree(startState);
+		return "lrlrlrlrlrlr";
 
-	private boolean checkSpace(char[][] mapData, char[][] itemsData, 
-							   int[] position) {
-		int x = position[X];
-		int y = position[Y];
-		// Check if it's a space or a goal. Whatever you can go through
-		if (mapData[y][x] == ' ' || mapData[y][x] == '.'){
-			return true;
-		}
-		else if (mapData[y][x] == '$'){
-			//if crate, check the next if its space or goal
-		}
-		// It's a wall
-		return false;
-	}
-	
-	public String search(int width, int height, 
-						 char[][] mapData, char[][] itemsData,
-						 int[] playerPos, String output) {		
-		// array directions
-		int[] upPos = playerPos;
-		int[] rightPos = playerPos;
-		int[] downPos = playerPos;
-		int[] leftPos = playerPos;
-		
-		upPos[Y] -= 1;
-		rightPos[X] += 1;
-		downPos[Y] += 1;
-		leftPos[X] -= 1;
-		
-		if (checkSpace(mapData, itemsData, upPos))
-			search(width, height, mapData, itemsData, upPos, output + "u");
-		if (checkSpace(mapData, itemsData, rightPos))
-			search(width, height, mapData, itemsData, rightPos, output + "r");
-		if (checkSpace(mapData, itemsData, downPos))
-			search(width, height, mapData, itemsData, downPos, output + "d");
-		if (checkSpace(mapData, itemsData, leftPos))
-			search(width, height, mapData, itemsData, leftPos, output + "l");
-		
-		return output;
-	}
-	
-	public String solveSokobanPuzzle(int width, int height, char[][] mapData, char[][] itemsData) {
-		int[] playerPos = getPosOfChar(itemsData, '@');
-		long startTime = System.currentTimeMillis();
-		long elapsedTime = System.currentTimeMillis() - startTime;
-		
-		if (elapsedTime <= 15000){
-			return search(width, height, mapData, itemsData, playerPos, "l");
-		}
-		else{
-			return "lrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlr";
-		}
 	}
 }
