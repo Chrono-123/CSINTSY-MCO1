@@ -56,11 +56,11 @@ public class SokoBot {
 	}
 
 
-
 	private boolean[][] detectBottlenecks(char[][] mapData) {
 		int width = mapData[0].length;
 		int height = mapData.length;
 		boolean[][] isBottleneck = new boolean[height][width];
+		System.out.println("Bottlenecks:");
 
 		// Iterate through the map to identify bottlenecks
 		for (int y = 0; y < height; y++) {
@@ -85,7 +85,6 @@ public class SokoBot {
 
 		return adjacentTiles == 2;
 	}
-
 
 
 	private int calculateMoveScore(State state, char[][] mapData) {
@@ -280,19 +279,26 @@ public class SokoBot {
 
 			State potentialState = new State(nextX, nextY, newCratePositions, currentState.moves + moveChar, score);
 
-			potentialStates.add(potentialState);
+			// Check if the potential state is a goal state
+			if (isGoalState(potentialState, mapData)) {
+				// Handle the goal state or simply skip it
+			} else {
+				potentialStates.add(potentialState);
+			}
 		}
 
-		// Sort potential states by their scores in descending order
-		potentialStates.sort(Comparator.comparingInt(s -> -s.score));
+		// Print potential states and their scores for debugging
+		for (State potentialState : potentialStates) {
+			System.out.println("Potential Move: " + potentialState.moves);
+			System.out.println("Potential Move Score: " + potentialState.score);
+		}
 
 		// Add the potential states to the list of next states
-		for (State potentialState : potentialStates) {
-			nextStates.add(potentialState);
-		}
+		nextStates.addAll(potentialStates);
 
 		return nextStates;
 	}
+
 
 	private class AStarNode {
 		State state;
@@ -339,52 +345,37 @@ public class SokoBot {
 	}
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	private void printMap(char[][] mapData, State state) {
-        for (int y = 0; y < mapData.length; y++) {
-            for (int x = 0; x < mapData[0].length; x++) {
-                if (state.playerX == x && state.playerY == y) {
-                    System.out.print(PLAYER);
-                } else {
-                    char cell = mapData[y][x];
-                    if (state.cratePositions.contains(x + "," + y)) {
-                        if (cell == GOAL) {
-                            System.out.print(CRATE_ON_GOAL);
-                        } else {
-                            System.out.print(CRATE);
-                        }
-                    } else {
-                        System.out.print(cell);
-                    }
-                }
-            }
-            System.out.println();
-        }
-    }
+		for (int y = 0; y < mapData.length; y++) {
+			for (int x = 0; x < mapData[0].length; x++) {
+				if (state.playerX == x && state.playerY == y) {
+					System.out.print(PLAYER);
+				} else {
+					char cell = mapData[y][x];
+					if (state.cratePositions.contains(x + "," + y)) {
+						if (cell == GOAL) {
+							System.out.print(CRATE_ON_GOAL);
+						} else {
+							System.out.print(CRATE);
+						}
+					} else {
+						System.out.print(cell);
+					}
+				}
+			}
+			System.out.println();
+		}
+	}
 
-    // Add this method to print the map with the current state
-    private void printGameState(char[][] mapData, State state) {
-        System.out.println("Current Map:");
-        printMap(mapData, state);
-        System.out.println("Player Position: (" + state.playerX + ", " + state.playerY + ")");
-        System.out.println("Crate Positions: " + state.cratePositions);
-        System.out.println("Moves: " + state.moves);
-        System.out.println("Score: " + state.score);
-    }
+	// Add this method to print the map with the current state
+	private void printGameState(char[][] mapData, State state) {
+		System.out.println("Current Map:");
+		printMap(mapData, state);
+		System.out.println("Player Position: (" + state.playerX + ", " + state.playerY + ")");
+		System.out.println("Crate Positions: " + state.cratePositions);
+		System.out.println("Moves: " + state.moves);
+		System.out.println("Score: " + state.score);
+	}
 
 
 	public String solveSokobanPuzzle(int width, int height, char[][] mapData, char[][] itemsData) {
@@ -394,10 +385,8 @@ public class SokoBot {
 		int playerX = 0, playerY = 0;
 		Set<String> cratePositions = new HashSet<>();
 
-		// ... (rest of the setup code)
-
 		AStarNode initialNode = new AStarNode(new State(playerX, playerY, cratePositions, "", 0), null, 0, heuristic(new State(playerX, playerY, cratePositions, "", 0), mapData));
-
+		System.out.println("Initial Heuristic Value: " + initialNode.estimatedTotalCost);
 
 		queue.add(initialNode);
 
@@ -405,18 +394,17 @@ public class SokoBot {
 			AStarNode currentNode = queue.poll();
 			State currentState = currentNode.state;
 
-			// Add this line to print the current game state
-            printGameState(mapData, currentState);
-
-
-			if (isGoalState(currentState, mapData)) {
-				return reconstructPath(currentNode);
-			}
+			// Print the current game state for every explored state
+			printGameState(mapData, currentState);
 
 			List<State> nextStates = generateMoves(currentState, mapData);
 
 			for (State nextState : nextStates) {
 				if (!visited.contains(nextState)) {
+					if (isGoalState(nextState, mapData)) {
+						// If the goal state is reached, return the path to reach it
+						return reconstructPath(new AStarNode(nextState, currentNode, 0, 0));
+					}
 					int costSoFar = currentNode.costSoFar + 1;
 					int estimatedTotalCost = costSoFar + heuristic(nextState, mapData);
 					AStarNode nextNode = new AStarNode(nextState, currentNode, costSoFar, estimatedTotalCost);
@@ -425,7 +413,7 @@ public class SokoBot {
 				}
 			}
 		}
-
 		return "No solution found";
 	}
 }
+
