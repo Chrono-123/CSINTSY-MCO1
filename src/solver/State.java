@@ -61,9 +61,6 @@ public class State {
 		int originX = origin[X];
 		int originY = origin[Y];
 		
-		char[][] itemsData = state.getItemsData();
-		char[][] mapData = state.getMapData();
-		
 		char[][] newItemsData = itemsData;
 		
 		if (itemsData[destY][destX] == GOAL) {
