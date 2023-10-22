@@ -4,11 +4,11 @@ import java.util.Arrays;
 public class SokobanGameState {
     int width, height;
     char[][] mapData, itemsData;
-    int[] playerPos;
+    int[] playerCoordinates;
     char parentMove;
     SokobanGameState parentGameState;
-    int[] boxArr, goalArr;
-    int[] boxPlayerArr;
+    int[] boxPositionArray, goalPositionArray ;
+    int[] boxAndPlayerArr;
     int boxes, goals;
     int depth;
 
@@ -20,44 +20,55 @@ public class SokobanGameState {
         this.mapData = mapData;
         this.itemsData = itemsData;
 
-        this.boxArr = new int[50];
+        this.boxPositionArray = new int[50];
         this.boxes = 0;
-        this.goalArr = new int[50];
+        this.goalPositionArray  = new int[50];
         this.goals = 0;
-        this.boxPlayerArr = new int[50];
+        this.boxAndPlayerArr = new int[50];
 
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
+        int i = 0;
+        int j = 0;
+
+        while (i < height) {
+            while (j < width) {
                 if (itemsData[i][j] == '@') {
-                    playerPos = new int[]{i, j};
-                    boxPlayerArr[0] = i;
-                    boxPlayerArr[1] = j;
+                    playerCoordinates = new int[]{i, j};
+                    boxAndPlayerArr[0] = i;
+                    boxAndPlayerArr[1] = j;
                 }
 
                 if (itemsData[i][j] == '$') {
                     int[] temp = {i, j};
 
-                    boxArr[boxes * 2] = i;
-                    boxArr[boxes * 2 + 1] = j;
+                    boxPositionArray[boxes * 2] = i;
+                    boxPositionArray[boxes * 2 + 1] = j;
 
-                    boxPlayerArr[boxes * 2 + 2] = i;
-                    boxPlayerArr[boxes * 2 + 3] = j;
+                    boxAndPlayerArr[boxes * 2 + 2] = i;
+                    boxAndPlayerArr[boxes * 2 + 3] = j;
 
                     boxes++;
                 }
+
                 if (mapData[i][j] == '.') {
                     int[] temp = {i, j};
 
-                    goalArr[goals * 2] = i;
-                    goalArr[goals * 2 + 1] = j;
+                    goalPositionArray [goals * 2] = i;
+                    goalPositionArray [goals * 2 + 1] = j;
                     goals++;
                 }
+
+                j++;
             }
+
+            // Reset j and increment i
+            j = 0;
+            i++;
         }
+
     }
 
     public boolean checkGoalFound() {
-        return Arrays.equals(boxArr, goalArr);
+        return Arrays.equals(boxPositionArray, goalPositionArray );
     }
 
     public void setParent(char move, SokobanGameState gameState) {
@@ -66,34 +77,46 @@ public class SokobanGameState {
     }
 
     public int getHeuristics() {
-        int minDist, h = 0;
-        int[] goalTemp = goalArr.clone();
-        for (int i = 0; i < boxes; i++) {
-            minDist = 99999;
-            for (int j = 0; j < goals; j++) {
-                int dist = getDistance(boxArr[i * 2 + 1], goalTemp[j * 2 + 1], boxArr[i * 2], goalTemp[j * 2]);
-                minDist = Math.min(minDist, dist);
+        int totalHeuristic = 0;
+
+        int minBoxToGoalDistance;
+        int heuristicFromPlayer;
+
+        int[] goalCoordinatesCopy = goalPositionArray .clone();
+
+        for (int boxIndex = 0; boxIndex < boxes; boxIndex++) {
+            minBoxToGoalDistance = Integer.MAX_VALUE;
+
+            for (int goalIndex = 0; goalIndex < goals; goalIndex++) {
+                int boxX = boxPositionArray[boxIndex * 2 + 1];
+                int goalY = goalCoordinatesCopy[goalIndex * 2 + 1];
+                int boxY = boxPositionArray[boxIndex * 2];
+                int goalX = goalCoordinatesCopy[goalIndex * 2];
+
+                int boxToGoalDistance = getDistance(boxX, goalY, boxY, goalX);
+                minBoxToGoalDistance = Math.min(minBoxToGoalDistance, boxToGoalDistance);
             }
-            h += minDist;
-            h += getDistance(playerPos[1], boxArr[i * 2 + 1], playerPos[0], boxArr[i * 2]);
+
+            heuristicFromPlayer = getDistance(playerCoordinates[1], boxPositionArray[boxIndex * 2 + 1], playerCoordinates[0], boxPositionArray[boxIndex * 2]);
+
+            totalHeuristic += minBoxToGoalDistance + heuristicFromPlayer;
         }
-        return h + depth;
+
+        return totalHeuristic + depth;
     }
+
+
 
     public int getDistance(int x1, int x2, int y1, int y2) {
         return Math.abs(x1 - x2) + Math.abs(y1 - y2);
     }
 
-    public char[][] copyItemData() {
+    public char[][] cloneItemData() {
         char[][] copy = new char[height][];
         for (int i = 0; i < height; i++) {
             copy[i] = new char[width];
             System.arraycopy(itemsData[i], 0, copy[i], 0, width);
         }
         return copy;
-    }
-
-    public void setDepth(int d) {
-        this.depth = d;
     }
 }

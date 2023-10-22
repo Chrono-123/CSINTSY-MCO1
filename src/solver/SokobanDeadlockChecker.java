@@ -13,8 +13,8 @@ public class SokobanDeadlockChecker {
     }
 
     private static boolean isCornerDeadlock(char move, SokobanGameState gameState) {
-        int x = gameState.playerPos[0];
-        int y = gameState.playerPos[1];
+        int x = gameState.playerCoordinates[0];
+        int y = gameState.playerCoordinates[1];
 
         // Define the offsets based on the move direction
         int xOff = 0;
