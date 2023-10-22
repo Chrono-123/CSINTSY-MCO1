@@ -53,7 +53,9 @@ public class SokoBot {
 	 * 
 	 * @return distance to a nearest goal
 	 * */
-	public static boolean checkSpace(State state, Direction direction, int[] origin) {
+	public static boolean checkSpace(State state, Direction direction) {
+		int[] origin = Tools.getPosOfChar(state.getItemsData(), Tools.PLAYER);
+		
 		int lookX = origin[Tools.X];
 		int lookY = origin[Tools.Y];
 		
@@ -104,25 +106,17 @@ public class SokoBot {
 			return;
 		}
 		
-		State northState = new State(state);
-		State eastState = new State(state);
-		State southState = new State(state);
-		State westState = new State(state);
+		Direction[] allDirs = {Direction.NORTH, Direction.SOUTH, 
+							   Direction.EAST, Direction.WEST};
 		
-		northState.move(Direction.NORTH);
-		eastState.move(Direction.EAST);
-		southState.move(Direction.SOUTH);
-		westState.move(Direction.WEST);
-		
-		state.addNextState(northState);
-		state.addNextState(eastState);
-		state.addNextState(southState);
-		state.addNextState(westState);
-		
-		generateTree(northState);
-		generateTree(eastState);
-		generateTree(southState);
-		generateTree(westState);
+		for (Direction dir : allDirs) {
+			if (checkSpace(state, dir)) {
+				State newState = new State(state);
+				state.addNextState(newState);
+				newState.move(dir);
+				generateTree(newState);
+			}
+		}
 	}
 
 	private void generateGoalItemsData(char[][] mapData) {
