@@ -106,6 +106,10 @@ public class State {
 		return dir;
 	}
 	
+	public int getHeuristic() {
+		// TODO: Manhattan and min distance
+	}
+	
 	public String getPlayerMovement() {
 		return playerMovement;
 	}
