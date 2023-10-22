@@ -15,18 +15,13 @@ public class SokoBot {
      * sequence
      * that just moves left and right repeatedly.
      */
-    SokobanGameState currentStateSokobanGameState = new SokobanGameState(width, height, mapData, itemsData, 0);
-
-    long startTime = System.nanoTime();
-
+    SokobanGameState currentStateSokobanGameState = new SokobanGameState(width, height, mapData, itemsData);
 
     SokobanGameState goal = aSearch(currentStateSokobanGameState);
 
-    String path = tracePath(currentStateSokobanGameState, goal);
-    //long elapsedTime = System.nanoTime() - startTime;
-    System.out.println(path);
-    //System.out.println("Execution Time: " + elapsedTime/1000000000 + "s");
-    return path;
+    String pathing = pathTracing(currentStateSokobanGameState, goal);
+    System.out.println(pathing);
+    return pathing;
   }
 
   public static class heuristic implements Comparator<SokobanGameState>{
@@ -42,22 +37,17 @@ public class SokoBot {
       }
   }
 
-  //<SokobanGameState> openSokobanGameStates = new PriorityQueue<>(new heuristic());
-
-  //HashMap<String, SokobanGameState> closedSokobanGameStates = new HashMap<>();
-
   public SokobanGameState aSearch(SokobanGameState startState) {
     PriorityQueue<SokobanGameState> openSokobanGameStates = new PriorityQueue<>(new heuristic());
     HashMap<String, SokobanGameState> closedSokobanGameStates = new HashMap<>();
 
     openSokobanGameStates.offer(startState);
-    int i = 0;
 
     while (!openSokobanGameStates.isEmpty()) {
       SokobanGameState currentState = openSokobanGameStates.remove();
-      String currentStatePos = Arrays.toString(currentState.boxAndPlayerArr);
+      String currentStatePos = Arrays.toString(currentState.crateAndPlayerArr);
 
-      if (currentState.checkGoalFound()) {
+      if (currentState.checkTargetFound()) {
         return currentState; // Goal found
       }
 
@@ -66,7 +56,7 @@ public class SokoBot {
 
       for (char move : listMoves) {
         SokobanGameState temp = createNextState(currentState, move);
-        String tempPos = Arrays.toString(temp.boxAndPlayerArr);
+        String tempPos = Arrays.toString(temp.crateAndPlayerArr);
 
         if (!closedSokobanGameStates.containsKey(tempPos)) {
           temp.setParent(move, currentState);
@@ -75,37 +65,40 @@ public class SokoBot {
       }
 
       closedSokobanGameStates.put(currentStatePos, currentState);
-      i++;
     }
-
     return null; // Goal not found
   }
 
   private SokobanGameState createNextState(SokobanGameState currentState, char move) {
     switch (move) {
       case 'u':
-        return new SokobanGameState(currentState.width, currentState.height, currentState.mapData, moveUp(currentState), currentState.depth + 1);
+        return new SokobanGameState(currentState.width, currentState.height, currentState.mapData, moveUp(currentState));
       case 'd':
-        return new SokobanGameState(currentState.width, currentState.height, currentState.mapData, moveDown(currentState), currentState.depth + 1);
+        return new SokobanGameState(currentState.width, currentState.height, currentState.mapData, moveDown(currentState));
       case 'l':
-        return new SokobanGameState(currentState.width, currentState.height, currentState.mapData, moveLeft(currentState), currentState.depth + 1);
+        return new SokobanGameState(currentState.width, currentState.height, currentState.mapData, moveLeft(currentState));
       case 'r':
-        return new SokobanGameState(currentState.width, currentState.height, currentState.mapData, moveRight(currentState), currentState.depth + 1);
+        return new SokobanGameState(currentState.width, currentState.height, currentState.mapData, moveRight(currentState));
       default:
         return null;
     }
   }
 
 
-public String tracePath(SokobanGameState start, SokobanGameState currentStateent){
-  StringBuilder sb = new StringBuilder();
-  while(!currentStateent.equals(start)){
+  public String pathTracing(SokobanGameState initial, SokobanGameState end){
+    if (initial == null || end == null) {
+      System.out.println("Unsolvable");
+      return " ";
+    }
 
-    sb.insert(0, currentStateent.parentMove);
-    currentStateent = currentStateent.parentGameState;
+    StringBuilder sb = new StringBuilder();
+    while (end != null && !end.equals(initial)) {
+      sb.insert(0, end.parentMove);
+      end = end.parentGameState;
+    }
+    return sb.toString();
   }
-  return sb.toString();
-}
+
 
   public char[][] moveDown(SokobanGameState state) {
     return moveHandler.moveDown(state);
