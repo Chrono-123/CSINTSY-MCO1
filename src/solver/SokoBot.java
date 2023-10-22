@@ -1,6 +1,7 @@
 package solver;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class SokoBot {	
@@ -68,7 +69,7 @@ public class SokoBot {
 		int[] dir = Direction.dirToPos(direction); 
 		
 		lookX += dir[Tools.X];
-		lookY += dir[Tools.X];
+		lookY += dir[Tools.Y]; //changed to Y from X
 		
 		// Check if it's a space or a goal. Also check if the player
 		// tries to push two crates. Whenever you can go through
@@ -100,23 +101,39 @@ public class SokoBot {
 		return (row > 0) && (col > 0) &&
 			   (row < height) && (col < width);
 	}
-	
+
 	private void generateTree(State state) {
 		if (goalState != null || storage.contains(state.getItemsData())) {
 			return;
 		}
-		
-		Direction[] allDirs = {Direction.NORTH, Direction.SOUTH, 
-							   Direction.EAST, Direction.WEST};
-		
+
+		if (isGoalState(state)) {
+			goalState = state;  // Set the goal state when found
+			return;
+		}
+
+		Direction[] allDirs = {Direction.NORTH, Direction.SOUTH,
+				               Direction.EAST, Direction.WEST};
+
 		for (Direction dir : allDirs) {
 			if (checkSpace(state, dir)) {
 				State newState = new State(state);
+				newState.setParent(state);  // Set parent state
 				state.addNextState(newState);
 				newState.move(dir);
 				generateTree(newState);
 			}
 		}
+	}
+
+	public List<State> tracePath(State goalState) {
+		List<State> path = new ArrayList<>();
+		State currentState = goalState;
+		while (currentState != null) {
+			path.add(0, currentState);  // Add state at the beginning of the list
+			currentState = currentState.getParent();
+		}
+		return path;
 	}
 
 	private void generateGoalItemsData(char[][] mapData) {
@@ -128,18 +145,24 @@ public class SokoBot {
 			}
 		}
 	}
-	
-	public String solveSokobanPuzzle(int width, int height, char[][] mapData, 
+
+	public String solveSokobanPuzzle(int width, int height, char[][] mapData,
 									 char[][] itemsData) {
 		this.width = width;
 		this.height = height;
 		startState = new State(itemsData, mapData);
-		
+
 		goalItemsData = itemsData;
 		generateGoalItemsData(mapData);
-		
-		generateTree(startState);
-		return "lrlrlrlrlrlr";
 
+		generateTree(startState);
+
+			List<State> path = tracePath(goalState);
+			StringBuilder pathString = new StringBuilder();
+			for (State state : path) {
+				pathString.append(state.getPlayerMovement());
+			}
+			System.out.println(pathString);
+			return pathString.toString();
 	}
 }
