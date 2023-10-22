@@ -3,17 +3,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SokoBot {
-	// Array indexes for position
-	public final static int X = 0;
-	public final static int Y = 1;
-	
-	// Character representation of each object
-	public final static char PLAYER = '@';
-	public final static char CRATE = '$';
-	public final static char WALL = '#';
-	public final static char GOAL = '.';
-	
+public class SokoBot {	
 	// Grid dimension
 	private int width;
 	private int height;
@@ -25,7 +15,7 @@ public class SokoBot {
 	
 	
 	private ArrayList<State> pathway = new ArrayList();
-	private HashMap<char[][], String> storage;
+	private ArrayList<char[][]> storage = new ArrayList();
 	
 	private String output = "";
 	
@@ -44,7 +34,7 @@ public class SokoBot {
 		
 		for (int i = 0; i < mapData.length; i++) {
 			for (int j = 0; j < mapData[i].length; j++) {
-				if (mapData[i][j] == GOAL && itemsData[i][j] != CRATE)
+				if (mapData[i][j] == Tools.GOAL && itemsData[i][j] != Tools.CRATE)
 					return false;
 			}
 		}
@@ -63,41 +53,32 @@ public class SokoBot {
 	 * 
 	 * @return distance to a nearest goal
 	 * */
-	public static boolean checkSpace(char[][] mapData, char[][] itemsData, 
-							   Direction direction, int[] origin) {
-		int x = origin[X];
-		int y = origin[Y];
+	public static boolean checkSpace(State state, Direction direction, int[] origin) {
+		int lookX = origin[Tools.X];
+		int lookY = origin[Tools.Y];
 		
-		int[] newPosition = origin;
-		switch (direction) {
-		case NORTH:
-			newPosition[Y] -= 1;
-			break;
+		char[][] mapData, itemsData;
+		mapData = state.getMapData();
+		itemsData = state.getItemsData();
 		
-		case SOUTH:
-			newPosition[Y] += 1;
-			break;
+		direction = state.getPlayerMovementDir();
 		
-		case EAST:
-			newPosition[X] -= 1;
-			break;
+		int[] dir = Direction.dirToPos(direction); 
 		
-		case WEST:
-			newPosition[X] += 1;
-			break;
-		}
+		lookX += dir[Tools.X];
+		lookY += dir[Tools.X];
 		
-		x = newPosition[X];
-		y = newPosition[Y];
-		
-		// Check again if there is a crate in the same direction
-		if (itemsData[y][x] == CRATE) {
-			return checkSpace(mapData, itemsData, direction, newPosition);			
-		}
-		
-		// Check if it's a space or a goal. Whatever you can go through
+		// Check if it's a space or a goal. Also check if the player
+		// tries to push two crates. Whenever you can go through
 
-		return (mapData[y][x] == ' ' || mapData[y][x] == '.');
+		int extraX = (1 * dir[Tools.X]);
+		int extraY = (1 * dir[Tools.Y]);
+		
+		return (// a space or a goal
+				mapData[lookY][lookX] == Tools.SPACE || mapData[lookY][lookX] == Tools.GOAL &&
+				// another crate or wall
+				(itemsData[lookY + extraY][lookX + extraX] != Tools.CRATE ||
+				itemsData[lookY + extraY][lookX + extraX] != Tools.WALL));
 	}
 	
 	/**
@@ -119,20 +100,36 @@ public class SokoBot {
 	}
 	
 	private void generateTree(State state) {
-		if (goalState != null || storage.containsKey(state.getItemsData())) {
+		if (goalState != null || storage.contains(state.getItemsData())) {
 			return;
 		}
 		
-		State upState = new State
+		State northState = new State(state);
+		State eastState = new State(state);
+		State southState = new State(state);
+		State westState = new State(state);
 		
-		state.addNextState();
+		northState.move(Direction.NORTH);
+		eastState.move(Direction.EAST);
+		southState.move(Direction.SOUTH);
+		westState.move(Direction.WEST);
+		
+		state.addNextState(northState);
+		state.addNextState(eastState);
+		state.addNextState(southState);
+		state.addNextState(westState);
+		
+		generateTree(northState);
+		generateTree(eastState);
+		generateTree(southState);
+		generateTree(westState);
 	}
 
 	private void generateGoalItemsData(char[][] mapData) {
 		for (int i = 0; i < mapData.length; i++) {
 			for (int j = 0; j < mapData[i].length; j++) {
-				if (mapData[i][j] == GOAL) {
-					goalItemsData[i][j] = CRATE;
+				if (mapData[i][j] == Tools.GOAL) {
+					goalItemsData[i][j] = Tools.CRATE;
 				}
 			}
 		}

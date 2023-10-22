@@ -11,34 +11,6 @@ public class State {
 	
 	private State parentState;
 	
-	State(State current, String playerMovement) {
-		int moveX = 0;
-		int moveY = 0;
-		
-		switch (playerMovement) {
-		case "l":
-			moveX = -1;
-			moveY = 0;
-			break;
-		case "r":
-			moveX = 1;
-			moveY = 0;
-			break;
-		case "u":
-			moveX = 0;
-			moveY = -1;
-			break;
-		case "d":
-			moveX = 0;
-			moveY = 1;
-			break;
-		}
-		
-		moveItem(this, '$', new int[2]);
-		
-		this.playerMovement = playerMovement;
-	}
-	
 	private void setParent(State parent) {
 		this.parentState = parent;
 	}
@@ -55,51 +27,83 @@ public class State {
 		this.mapData= mapData;
 	}
 	
-	private boolean moveItem(State state, char item, int[] dest, int[] origin) {
-		int destX =   dest[X];
-		int destY =   dest[Y];
-		int originX = origin[X];
-		int originY = origin[Y];
+	State(State parentState) {
+		nextStates = new ArrayList<State>();
+		this.cost = 0;
+		this.playerMovement = "";
+		this.itemsData = parentState.getItemsData();
+		this.mapData= parentState.getMapData();
+	}
+	
+	public void move(Direction direction) {
+		int[] playerPos;
+		int[] dest;
+		int[] dir;
 		
-		char[][] newItemsData = itemsData;
+		playerPos = Tools.getPosOfChar(itemsData, Tools.PLAYER);
 		
-		if (itemsData[destY][destX] == GOAL) {
-			int[] newPos = dest;
-			newPos[X] += destX - originX;
-			newPos[Y] += destY - originY;
-			moveItem(itemsData, mapData, newPos, dest, GOAL);
+		// Create an array representing as direction
+		dir = Direction.dirToPos(direction);
+		
+		// Determine the new position based on the direction.
+		dest = new int[2];
+		dest[Tools.X] = dir[Tools.X] + playerPos[Tools.X];
+		dest[Tools.Y] = dir[Tools.Y] + playerPos[Tools.Y];
+		
+		
+		// Push the crate
+		if (Tools.IsCharInPos(itemsData, dest, Tools.CRATE)) {
+			int[] extraPos = new int[2];
+			
+			extraPos[Tools.X] = dest[Tools.X] + (1 * dir[Tools.X]);
+			extraPos[Tools.Y] = dest[Tools.Y] + (1 * dir[Tools.Y]);
+			
+			replaceChar(dest, Tools.SPACE);
+			replaceChar(extraPos, Tools.CRATE);
 		}
 		
-		// Check if it is a wall or outside of the board
-		if (mapData[destY][destX] == WALL || !withinBoundary(destY, destX))
-			return false;
+		// Move the Player
+		replaceChar(playerPos, Tools.SPACE);
+		replaceChar(dest, Tools.PLAYER);
 		
-		if (item == PLAYER && itemsData[destY][destX] != GOAL) {
-			newItemsData[originY][originX] = ' ';
-			newItemsData[destY][destX] = item;
-		}
-		
-		return true;
+		// Update the playerMovement string
+		playerMovement = Direction.dirToStr(direction);
+	}
+	
+	private void replaceChar(int[] pos, char newChar) {
+		itemsData[pos[Tools.Y]][pos[Tools.X]] = newChar;
 	}
 	
 	public void addNextStates(ArrayList<State> nextStates) {
 		nextStates.addAll(nextStates);
 	}
 	
+	public void addNextState(State nextState) {
+		nextStates.add(nextState);
+	}
+	
 	public ArrayList<State> getNextStates() {
 		return nextStates;
 	}
 	
-	public void setCost(int cost) {
-		this.cost = cost;
-	}
-	
-	public int getCost() {
-		return cost;
-	}
-	
 	public void setPlayerMovement(String movement) {
 		this.playerMovement = movement;
+	}
+	
+	public Direction getPlayerMovementDir() {
+		Direction dir = Direction.NORTH;
+		switch (playerMovement) {
+		case "u":
+			dir = Direction.NORTH;
+		case "d":
+			dir = Direction.SOUTH;
+		case "r":
+			dir = Direction.WEST;
+		case "l":
+			dir = Direction.EAST;
+		}
+		
+		return dir;
 	}
 	
 	public String getPlayerMovement() {
