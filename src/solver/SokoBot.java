@@ -1,154 +1,182 @@
 package solver;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+
+import java.util.*;
 
 public class SokoBot {
-	// Array indexes for position
-	public final static int X = 0;
-	public final static int Y = 1;
-	
-	// Character representation of each object
-	public final static char PLAYER = '@';
-	public final static char CRATE = '$';
-	public final static char WALL = '#';
-	public final static char GOAL = '.';
-	
-	// Grid dimension
-	private int width;
-	private int height;
-	
-	private char[][] goalItemsData;
-	
-	private State startState;
-	private State goalState;
-	
-	
-	private ArrayList<State> pathway = new ArrayList();
-	private HashMap<char[][], String> storage;
-	
-	private String output = "";
-	
-//	private boolean isCompleted(char[][] mapData, char[][] itemsData) {
-//		for (int i = 0; i < mapData.length; i++) {
-//			for (int j = 0; j < mapData[i].length; j++) {
-//				if (mapData[i][j] == GOAL && itemsData[i][j] != CRATE)
-//					return false;
-//			}
-//		}
-//		return true;
-//	}
-	private boolean isGoalState(State state) {
-		char[][] mapData = state.getMapData();
-		char[][] itemsData = state.getItemsData();
-		
-		for (int i = 0; i < mapData.length; i++) {
-			for (int j = 0; j < mapData[i].length; j++) {
-				if (mapData[i][j] == GOAL && itemsData[i][j] != CRATE)
-					return false;
-			}
-		}
-		return true;
-	}
-	
-	
-	
-	/**
-	 * Check for a space in a direction
-	 * 
-	 * @param mapData   map data
-	 * @param itemsData item data
-	 * @param direction what direction the player is facing
-	 * @param origin    position of the player or something else
-	 * 
-	 * @return distance to a nearest goal
-	 * */
-	public static boolean checkSpace(char[][] mapData, char[][] itemsData, 
-							   Direction direction, int[] origin) {
-		int x = origin[X];
-		int y = origin[Y];
-		
-		int[] newPosition = origin;
-		switch (direction) {
-		case NORTH:
-			newPosition[Y] -= 1;
-			break;
-		
-		case SOUTH:
-			newPosition[Y] += 1;
-			break;
-		
-		case EAST:
-			newPosition[X] -= 1;
-			break;
-		
-		case WEST:
-			newPosition[X] += 1;
-			break;
-		}
-		
-		x = newPosition[X];
-		y = newPosition[Y];
-		
-		// Check again if there is a crate in the same direction
-		if (itemsData[y][x] == CRATE) {
-			return checkSpace(mapData, itemsData, direction, newPosition);			
-		}
-		
-		// Check if it's a space or a goal. Whatever you can go through
 
-		return (mapData[y][x] == ' ' || mapData[y][x] == '.');
-	}
-	
-	/**
-	 * Moves an item. Usually used with player. Only time the item is a crate
-	 * is when it is called recursively. The recursion only occurs when the
-	 * player pushes the block.
-	 * */
-	
-	
-	/**
-	 * Check whether the position is within the board
-	 * 
-	 * @return true - within board
-	 * 		   false - outside board
-	 * */
-	private boolean withinBoundary(int row, int col) {
-		return (row > 0) && (col > 0) &&
-			   (row < height) && (col < width);
-	}
-	
-	private void generateTree(State state) {
-		if (goalState != null || storage.containsKey(state.getItemsData())) {
-			return;
-		}
-		
-		State upState = new State
-		
-		state.addNextState();
-	}
+  public String solveSokobanPuzzle(int width, int height, char[][] mapData, char[][] itemsData) {
+    /*
+     * YOU NEED TO REWRITE THE IMPLEMENTATION OF THIS METHOD TO MAKE THE BOT SMARTER
+     */
+    /*
+     * Default stupid behavior: Think (sleep) for 3 seconds, and then return a
+     * sequence
+     * that just moves left and right repeatedly.
+     */
+    SokobanGameState currSokobanGameState = new SokobanGameState(width, height, mapData, itemsData, 0);
+    long startTime = System.nanoTime();
 
-	private void generateGoalItemsData(char[][] mapData) {
-		for (int i = 0; i < mapData.length; i++) {
-			for (int j = 0; j < mapData[i].length; j++) {
-				if (mapData[i][j] == GOAL) {
-					goalItemsData[i][j] = CRATE;
-				}
-			}
-		}
-	}
-	
-	public String solveSokobanPuzzle(int width, int height, char[][] mapData, 
-									 char[][] itemsData) {
-		this.width = width;
-		this.height = height;
-		startState = new State(itemsData, mapData);
-		
-		goalItemsData = itemsData;
-		generateGoalItemsData(mapData);
-		
-		generateTree(startState);
-		return "lrlrlrlrlrlr";
+    SokobanGameState goal = aSearch(currSokobanGameState);
 
-	}
+    String path = tracePath(currSokobanGameState, goal);
+    long elapsedTime = System.nanoTime() - startTime;
+    System.out.println(path);
+    System.out.println("Execution Time: " + elapsedTime/1000000000 + "s");
+    return path;
+  }
+
+  public static class heuristicsComparator implements Comparator<SokobanGameState>{
+      @Override
+      public int compare(SokobanGameState n1, SokobanGameState n2) {
+          int first = n1.getHeuristics();
+          int second = n2.getHeuristics();
+          if(first > second)
+              return 1;
+          else if(first < second)
+              return -1;
+          return 0;
+      }
+  }
+
+  PriorityQueue<SokobanGameState> openSokobanGameStates = new PriorityQueue<>(new heuristicsComparator());
+
+  HashMap<String, SokobanGameState> closedSokobanGameStates = new HashMap<>();
+  
+public SokobanGameState aSearch(SokobanGameState startState){
+  Scanner sc = new Scanner(System.in);
+  SokobanGameState curr = startState;
+  boolean goalFound = curr.checkGoalFound();
+  int i=0;
+  if(!goalFound){
+
+    openSokobanGameStates.offer(curr);
+    while(!goalFound && !openSokobanGameStates.isEmpty()){
+      curr = openSokobanGameStates.remove();
+      String currPos = Arrays.toString(curr.boxPlayerArr);
+      SokobanMoveChecker moveChecker = new SokobanMoveChecker();
+
+      goalFound = curr.checkGoalFound();
+      if(!goalFound) {
+        ArrayList<Character> listMoves = moveChecker.checkMoves(curr);
+        if (!listMoves.isEmpty()) {
+          for (char move : listMoves) {
+            SokobanGameState temp = switch (move) {
+              case 'u' -> new SokobanGameState(curr.width, curr.height, curr.mapData, moveUp(curr), curr.depth + 1);
+              case 'd' -> new SokobanGameState(curr.width, curr.height, curr.mapData, moveDown(curr), curr.depth + 1);
+              case 'l' -> new SokobanGameState(curr.width, curr.height, curr.mapData, moveLeft(curr), curr.depth + 1);
+              case 'r' -> new SokobanGameState(curr.width, curr.height, curr.mapData, moveRight(curr), curr.depth + 1);
+              default -> null;
+            };
+            assert temp != null;
+            String tempos = Arrays.toString(temp.boxPlayerArr);
+            if(!closedSokobanGameStates.containsKey(tempos)){
+                               temp.setParent(move, curr);
+                  openSokobanGameStates.offer(temp);
+
+            }
+          }
+        }
+      }
+      closedSokobanGameStates.put(currPos, curr);
+      i++;
+    }
+  }
+  System.out.println("SokobanGameStates: " + i);
+  return curr;
+}
+
+public String tracePath(SokobanGameState start, SokobanGameState current){
+  StringBuilder sb = new StringBuilder();
+  while(!current.equals(start)){
+
+    sb.insert(0, current.parentMove);
+    current = current.parentGameState;
+  }
+  return sb.toString();
+}
+  public char[][] moveDown(SokobanGameState state){
+    int x = state.playerPos[0];
+    int y = state.playerPos[1];
+    char[][] copy = state.copyItemData();
+    if(copy[x+1][y]=='$'){
+      swap(x+1, y, copy, 'D');
+    }
+    swap(x, y, copy, 'D');
+    return copy;
+  }
+
+  public char[][] moveUp(SokobanGameState state){
+    int x = state.playerPos[0];
+    int y = state.playerPos[1];
+    char[][] copy = state.copyItemData();
+    if(copy[x-1][y]=='$'){
+      swap(x-1, y, copy, 'U');
+    }
+    swap(x, y, copy, 'U');
+    return copy;
+  }
+
+  public char[][] moveLeft(SokobanGameState state){
+    int x = state.playerPos[0];
+    int y = state.playerPos[1];
+    char[][] copy = state.copyItemData();
+    if(copy[x][y-1]=='$'){
+      swap(x, y-1, copy, 'L');
+    }
+    swap(x, y, copy, 'L');
+    return copy;
+  }
+
+  public char[][] moveRight(SokobanGameState state){
+    int x = state.playerPos[0];
+    int y = state.playerPos[1];
+    char[][] copy = state.copyItemData();
+    if(copy[x][y+1]=='$'){
+      swap(x, y+1, copy, 'R');
+    }
+    swap(x, y, copy, 'R');
+    return copy;
+  }
+
+  public void swap(int x, int y, char[][] itemsData, char move){
+    char temp;
+    switch(move){
+      case 'D':
+        temp = itemsData[x+1][y];
+        itemsData[x+1][y] = itemsData[x][y];
+        itemsData[x][y] = temp;
+        break;
+      case 'U':
+        temp = itemsData[x-1][y];
+        itemsData[x-1][y] = itemsData[x][y];
+        itemsData[x][y] = temp;
+        break;
+      case 'L':
+        temp = itemsData[x][y-1];
+        itemsData[x][y-1] = itemsData[x][y];
+        itemsData[x][y] = temp;
+        break;
+      case 'R':
+        temp = itemsData[x][y+1];
+        itemsData[x][y+1] = itemsData[x][y];
+        itemsData[x][y] = temp;
+    }
+  }
+
+  public void printMap(int width, int height, char[][] mapData, char[][] itemsData){
+      for(int i=0; i<height; i++){
+      for(int j=0; j<width; j++){
+        System.out.print(mapData[i][j]);
+      }
+      System.out.println();
+    }
+
+    for(int i=0; i<height; i++){
+      for(int j=0; j<width; j++){
+        System.out.print(itemsData[i][j]);
+      }
+      System.out.println();
+    }
+  }
+
 }
