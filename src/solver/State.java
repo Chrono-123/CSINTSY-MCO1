@@ -8,45 +8,17 @@ public class State {
 	private ArrayList<State> nextStates;
 	private int cost;
 	private String playerMovement;
-	
+
 	private State parentState;
-	
-	State(State current, String playerMovement) {
-		int moveX = 0;
-		int moveY = 0;
-		
-		switch (playerMovement) {
-		case "l":
-			moveX = -1;
-			moveY = 0;
-			break;
-		case "r":
-			moveX = 1;
-			moveY = 0;
-			break;
-		case "u":
-			moveX = 0;
-			moveY = -1;
-			break;
-		case "d":
-			moveX = 0;
-			moveY = 1;
-			break;
-		}
-		
-		moveItem(this, '$', new int[2]);
-		
-		this.playerMovement = playerMovement;
-	}
-	
-	private void setParent(State parent) {
+
+	void setParent(State parent) {
 		this.parentState = parent;
 	}
-	
-	private State getParent() {
+
+	State getParent() {
 		return parentState;
 	}
-	
+
 	State(char[][] itemsData, char[][] mapData) {
 		nextStates = new ArrayList<State>();
 		this.cost = 0;
@@ -54,62 +26,102 @@ public class State {
 		this.itemsData = itemsData;
 		this.mapData= mapData;
 	}
-	
-	private boolean moveItem(State state, char item, int[] dest, int[] origin) {
-		int destX =   dest[X];
-		int destY =   dest[Y];
-		int originX = origin[X];
-		int originY = origin[Y];
-		
-		char[][] newItemsData = itemsData;
-		
-		if (itemsData[destY][destX] == GOAL) {
-			int[] newPos = dest;
-			newPos[X] += destX - originX;
-			newPos[Y] += destY - originY;
-			moveItem(itemsData, mapData, newPos, dest, GOAL);
-		}
-		
-		// Check if it is a wall or outside of the board
-		if (mapData[destY][destX] == WALL || !withinBoundary(destY, destX))
-			return false;
-		
-		if (item == PLAYER && itemsData[destY][destX] != GOAL) {
-			newItemsData[originY][originX] = ' ';
-			newItemsData[destY][destX] = item;
-		}
-		
-		return true;
+
+	State(State parentState) {
+		nextStates = new ArrayList<State>();
+		this.cost = 0;
+		this.playerMovement = "";
+		this.itemsData = parentState.getItemsData();
+		this.mapData= parentState.getMapData();
 	}
-	
+
+	public void move(Direction direction) {
+		int[] playerPos;
+		int[] dest;
+		int[] dir;
+
+		playerPos = Tools.getPosOfChar(itemsData, Tools.PLAYER);
+
+		// Create an array representing as direction
+		dir = Direction.dirToPos(direction);
+
+		// Determine the new position based on the direction.
+		dest = new int[2];
+		dest[Tools.X] = dir[Tools.X] + playerPos[Tools.X];
+		dest[Tools.Y] = dir[Tools.Y] + playerPos[Tools.Y];
+
+
+		// Push the crate
+		if (Tools.IsCharInPos(itemsData, dest, Tools.CRATE)) {
+			int[] extraPos = new int[2];
+
+			extraPos[Tools.X] = dest[Tools.X] + (1 * dir[Tools.X]);
+			extraPos[Tools.Y] = dest[Tools.Y] + (1 * dir[Tools.Y]);
+
+			replaceChar(dest, Tools.SPACE);
+			replaceChar(extraPos, Tools.CRATE);
+		}
+
+		// Move the Player
+		replaceChar(playerPos, Tools.SPACE);
+		replaceChar(dest, Tools.PLAYER);
+
+		// Update the playerMovement string
+		playerMovement = Direction.dirToStr(direction);
+	}
+
+	private void replaceChar(int[] pos, char newChar) {
+		itemsData[pos[Tools.Y]][pos[Tools.X]] = newChar;
+	}
+
 	public void addNextStates(ArrayList<State> nextStates) {
 		nextStates.addAll(nextStates);
 	}
-	
+
+	public void addNextState(State nextState) {
+		nextStates.add(nextState);
+	}
+
 	public ArrayList<State> getNextStates() {
 		return nextStates;
 	}
-	
-	public void setCost(int cost) {
-		this.cost = cost;
-	}
-	
-	public int getCost() {
-		return cost;
-	}
-	
+
 	public void setPlayerMovement(String movement) {
 		this.playerMovement = movement;
 	}
-	
+
+	public Direction getPlayerMovementDir() {
+		Direction dir = Direction.NORTH;
+		switch (playerMovement) { // added break statements
+		case "u":
+			dir = Direction.NORTH;
+			break;
+		case "d":
+			dir = Direction.SOUTH;
+			break;
+		case "r":
+			dir = Direction.WEST;
+			break;
+		case "l":
+			dir = Direction.EAST;
+			break;
+		}
+
+		return dir;
+	}
+
+//	public int getHeuristic() {
+//		// TODO: Manhattan and min distance
+//	}
+
 	public String getPlayerMovement() {
 		return playerMovement;
 	}
-	
+
 	public char[][] getItemsData() {
 		return itemsData;
 	}
-	
+
 	public char[][] getMapData() {
 		return mapData;
 	}

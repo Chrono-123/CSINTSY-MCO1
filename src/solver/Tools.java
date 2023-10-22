@@ -8,8 +8,9 @@ public class Tools {
 	public final static char CRATE = '$';
 	public final static char WALL = '#';
 	public final static char GOAL = '.';
+	public final static char SPACE = ' ';
 	
-	private static boolean isGoalState(State state) {
+	public static boolean isGoalState(State state) {
 		char[][] mapData = state.getMapData();
 		char[][] itemsData = state.getItemsData();
 		
@@ -64,5 +65,9 @@ public class Tools {
 		}
 		
 		return position;
+	}
+	
+	public static boolean IsCharInPos(char[][] data, int[] pos, char c) {
+		return data[pos[Tools.Y]][pos[Tools.X]] == c;
 	}
 }

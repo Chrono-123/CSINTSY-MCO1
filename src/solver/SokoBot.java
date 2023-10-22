@@ -1,19 +1,10 @@
 package solver;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-public class SokoBot {
-	// Array indexes for position
-	public final static int X = 0;
-	public final static int Y = 1;
-	
-	// Character representation of each object
-	public final static char PLAYER = '@';
-	public final static char CRATE = '$';
-	public final static char WALL = '#';
-	public final static char GOAL = '.';
-	
+public class SokoBot {	
 	// Grid dimension
 	private int width;
 	private int height;
@@ -25,7 +16,7 @@ public class SokoBot {
 	
 	
 	private ArrayList<State> pathway = new ArrayList();
-	private HashMap<char[][], String> storage;
+	private ArrayList<char[][]> storage = new ArrayList();
 	
 	private String output = "";
 	
@@ -44,7 +35,7 @@ public class SokoBot {
 		
 		for (int i = 0; i < mapData.length; i++) {
 			for (int j = 0; j < mapData[i].length; j++) {
-				if (mapData[i][j] == GOAL && itemsData[i][j] != CRATE)
+				if (mapData[i][j] == Tools.GOAL && itemsData[i][j] != Tools.CRATE)
 					return false;
 			}
 		}
@@ -63,41 +54,34 @@ public class SokoBot {
 	 * 
 	 * @return distance to a nearest goal
 	 * */
-	public static boolean checkSpace(char[][] mapData, char[][] itemsData, 
-							   Direction direction, int[] origin) {
-		int x = origin[X];
-		int y = origin[Y];
+	public static boolean checkSpace(State state, Direction direction) {
+		int[] origin = Tools.getPosOfChar(state.getItemsData(), Tools.PLAYER);
 		
-		int[] newPosition = origin;
-		switch (direction) {
-		case NORTH:
-			newPosition[Y] -= 1;
-			break;
+		int lookX = origin[Tools.X];
+		int lookY = origin[Tools.Y];
 		
-		case SOUTH:
-			newPosition[Y] += 1;
-			break;
+		char[][] mapData, itemsData;
+		mapData = state.getMapData();
+		itemsData = state.getItemsData();
 		
-		case EAST:
-			newPosition[X] -= 1;
-			break;
+		direction = state.getPlayerMovementDir();
 		
-		case WEST:
-			newPosition[X] += 1;
-			break;
-		}
+		int[] dir = Direction.dirToPos(direction); 
 		
-		x = newPosition[X];
-		y = newPosition[Y];
+		lookX += dir[Tools.X];
+		lookY += dir[Tools.Y]; //changed to Y from X
 		
-		// Check again if there is a crate in the same direction
-		if (itemsData[y][x] == CRATE) {
-			return checkSpace(mapData, itemsData, direction, newPosition);			
-		}
-		
-		// Check if it's a space or a goal. Whatever you can go through
+		// Check if it's a space or a goal. Also check if the player
+		// tries to push two crates. Whenever you can go through
 
-		return (mapData[y][x] == ' ' || mapData[y][x] == '.');
+		int extraX = (1 * dir[Tools.X]);
+		int extraY = (1 * dir[Tools.Y]);
+		
+		return (// a space or a goal
+				mapData[lookY][lookX] == Tools.SPACE || mapData[lookY][lookX] == Tools.GOAL &&
+				// another crate or wall
+				(itemsData[lookY + extraY][lookX + extraX] != Tools.CRATE ||
+				itemsData[lookY + extraY][lookX + extraX] != Tools.WALL));
 	}
 	
 	/**
@@ -117,38 +101,68 @@ public class SokoBot {
 		return (row > 0) && (col > 0) &&
 			   (row < height) && (col < width);
 	}
-	
+
 	private void generateTree(State state) {
-		if (goalState != null || storage.containsKey(state.getItemsData())) {
+		if (goalState != null || storage.contains(state.getItemsData())) {
 			return;
 		}
-		
-		State upState = new State
-		
-		state.addNextState();
+
+		if (isGoalState(state)) {
+			goalState = state;  // Set the goal state when found
+			return;
+		}
+
+		Direction[] allDirs = {Direction.NORTH, Direction.SOUTH,
+				               Direction.EAST, Direction.WEST};
+
+		for (Direction dir : allDirs) {
+			if (checkSpace(state, dir)) {
+				State newState = new State(state);
+				newState.setParent(state);  // Set parent state
+				state.addNextState(newState);
+				newState.move(dir);
+				generateTree(newState);
+			}
+		}
+	}
+
+	public List<State> tracePath(State goalState) {
+		List<State> path = new ArrayList<>();
+		State currentState = goalState;
+		while (currentState != null) {
+			path.add(0, currentState);  // Add state at the beginning of the list
+			currentState = currentState.getParent();
+		}
+		return path;
 	}
 
 	private void generateGoalItemsData(char[][] mapData) {
 		for (int i = 0; i < mapData.length; i++) {
 			for (int j = 0; j < mapData[i].length; j++) {
-				if (mapData[i][j] == GOAL) {
-					goalItemsData[i][j] = CRATE;
+				if (mapData[i][j] == Tools.GOAL) {
+					goalItemsData[i][j] = Tools.CRATE;
 				}
 			}
 		}
 	}
-	
-	public String solveSokobanPuzzle(int width, int height, char[][] mapData, 
+
+	public String solveSokobanPuzzle(int width, int height, char[][] mapData,
 									 char[][] itemsData) {
 		this.width = width;
 		this.height = height;
 		startState = new State(itemsData, mapData);
-		
+
 		goalItemsData = itemsData;
 		generateGoalItemsData(mapData);
-		
-		generateTree(startState);
-		return "lrlrlrlrlrlr";
 
+		generateTree(startState);
+
+			List<State> path = tracePath(goalState);
+			StringBuilder pathString = new StringBuilder();
+			for (State state : path) {
+				pathString.append(state.getPlayerMovement());
+			}
+			System.out.println(pathString);
+			return pathString.toString();
 	}
 }
