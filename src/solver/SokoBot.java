@@ -146,7 +146,7 @@ public class SokoBot {
 				
 				for (State next : state.getNextStates()) {
 					System.out.print("Sokobot.generateTree(state, " + level + "): ");
-					System.out.println("next.getPlayerMovement() = "+ next.getPlayerMovement());
+					System.out.println("state.getPlayerMovement() = "+ next.getPlayerMovement());
 				}
 				
 				System.out.print("Sokobot.generateTree(state, " + level + "): ");
