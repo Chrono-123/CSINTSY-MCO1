@@ -39,8 +39,8 @@ public class State {
 		int[] playerPos;
 		int[] dest;
 		int[] dir;
-
-		playerPos = Tools.getPosOfChar(itemsData, Tools.PLAYER);
+		
+		playerPos = Tools.getPosOfChar(itemsData, Tools.PLAYER).get(0);
 
 		// Create an array representing as direction
 		dir = Direction.dirToPos(direction);
@@ -49,8 +49,13 @@ public class State {
 		dest = new int[2];
 		dest[Tools.X] = dir[Tools.X] + playerPos[Tools.X];
 		dest[Tools.Y] = dir[Tools.Y] + playerPos[Tools.Y];
-
-
+		
+		System.out.print("State.move(): ");
+		System.out.println("direction: " + Direction.dirToStr(direction));
+		
+		System.out.print("State.move(): ");
+		System.out.println(dest[Tools.X] + ", " + dest[Tools.Y]);
+		
 		// Push the crate
 		if (Tools.IsCharInPos(itemsData, dest, Tools.CRATE)) {
 			int[] extraPos = new int[2];
@@ -109,11 +114,32 @@ public class State {
 
 		return dir;
 	}
-
-//	public int getHeuristic() {
-//		// TODO: Manhattan and min distance
-//	}
-
+	
+	public int getHeuristic() {
+		// TODO: Manhattan and min distance
+		ArrayList<int[]> goals = Tools.getPosOfChar(itemsData, Tools.GOAL);
+		ArrayList<int[]> crates = Tools.getPosOfChar(itemsData, Tools.CRATE);
+		
+		int closestToGoal;
+		int playerHeuristic;
+		int totalHeuristic = 0;
+		
+		int[] playerPos = Tools.getPosOfChar(itemsData, Tools.PLAYER).get(0);
+		
+		for (int[] crate : crates) {
+			closestToGoal = Integer.MAX_VALUE;
+			for (int[] goal: goals) {
+				closestToGoal = Math.min(closestToGoal, Tools.getDistance(crate, goal));
+			}
+			
+			playerHeuristic = Tools.getDistance(playerPos, crate);
+			
+			totalHeuristic += playerHeuristic + closestToGoal;
+		}
+		
+		return totalHeuristic;
+	}
+	
 	public String getPlayerMovement() {
 		return playerMovement;
 	}
