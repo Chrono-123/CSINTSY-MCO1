@@ -157,12 +157,12 @@ public class SokoBot {
 
 		generateTree(startState);
 
-			List<State> path = tracePath(goalState);
-			StringBuilder pathString = new StringBuilder();
-			for (State state : path) {
-				pathString.append(state.getPlayerMovement());
-			}
-			System.out.println(pathString);
-			return pathString.toString();
+		List<State> path = tracePath(goalState);
+		StringBuilder pathString = new StringBuilder();
+		for (State state : path) {
+			pathString.append(state.getPlayerMovement());
+		}
+		System.out.println(pathString);
+		return pathString.toString();
 	}
 }
