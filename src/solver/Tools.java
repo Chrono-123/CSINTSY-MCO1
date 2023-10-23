@@ -74,9 +74,9 @@ public static ArrayList<int[]> getPosOfChar(char[][] data, char target) {
 		return data[pos[Tools.Y]][pos[Tools.X]] == c;
 	}
 	
-	public static int getDistance(int[] source, int[] dest) {
-		int xx = source[Tools.Y] - dest[Tools.Y]; 
-		int yy = source[Tools.Y] - dest[Tools.Y]; 
-		return Math.abs(xx + yy);
-	}
+public static int getDistance(int[] source, int[] dest) {
+	int xx = source[Tools.Y] - dest[Tools.Y]; 
+	int yy = source[Tools.Y] - dest[Tools.Y]; 
+	return Math.abs(xx) + Math.abs(yy);
+}
 }

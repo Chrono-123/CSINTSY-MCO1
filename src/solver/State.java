@@ -41,7 +41,6 @@ public class State {
 		int[] dir;
 		
 		playerPos = Tools.getPosOfChar(itemsData, Tools.PLAYER).get(0);
-		
 		// Create an array representing as direction
 		dir = Direction.dirToPos(direction);
 		
@@ -50,6 +49,8 @@ public class State {
 		dest[Tools.X] = dir[Tools.X] + playerPos[Tools.X];
 		dest[Tools.Y] = dir[Tools.Y] + playerPos[Tools.Y];
 		
+		System.out.println("direction: " + Direction.dirToStr(direction));
+		System.out.println(dest[Tools.X] + ", " + dest[Tools.Y]);
 		
 		// Push the crate
 		if (Tools.IsCharInPos(itemsData, dest, Tools.CRATE)) {
