@@ -56,7 +56,7 @@ public class State {
 		int[] playerPos;
 		int[] dest;
 		int[] dir;
-		
+    
 		playerPos = Tools.getPosOfChar(itemsData, Tools.PLAYER).get(0);
 
 		// Create an array representing as direction
@@ -66,6 +66,7 @@ public class State {
 		dest = new int[2];
 		dest[Tools.X] = dir[Tools.X] + playerPos[Tools.X];
 		dest[Tools.Y] = dir[Tools.Y] + playerPos[Tools.Y];
+
 		
 //		System.out.print("State.move(): ");
 //		System.out.println("direction: " + Direction.dirToStr(direction));
@@ -130,8 +131,7 @@ public class State {
 		}
 
 		return dir;
-	}
-	
+	}	
 	public int getHeuristic() {
 		// TODO: Manhattan and min distance
 		ArrayList<int[]> goals = Tools.getPosOfChar(itemsData, Tools.GOAL);
@@ -156,7 +156,7 @@ public class State {
 		
 		return totalHeuristic;
 	}
-	
+
 	public String getPlayerMovement() {
 		return playerMovement;
 	}
