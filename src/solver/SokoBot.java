@@ -143,12 +143,13 @@ public class SokoBot {
 			System.out.println("Checking: " + Direction.dirToStr(dir));
 			if (checkSpace(state, dir)) {
 				State newState = new State(state);
+
 				newState.move(dir);
 				state.addNextState(newState);
 				
 				for (State next : state.getNextStates()) {
 					System.out.print("Sokobot.generateTree(state, " + level + "): ");
-					System.out.println("next.getPlayerMovement() = "+ next.getPlayerMovement());
+					System.out.println("state.getPlayerMovement() = "+ next.getPlayerMovement());
 				}
 				
 				System.out.print("Sokobot.generateTree(state, " + level + "): ");
@@ -157,6 +158,16 @@ public class SokoBot {
 				generateTree(newState, level + 1);
 			}
 		}
+	}
+
+	public List<State> tracePath(State goalState) {
+		List<State> path = new ArrayList<>();
+		State currentState = goalState;
+		while (currentState != null) {
+			path.add(0, currentState);  // Add state at the beginning of the list
+			currentState = currentState.getParent();
+		}
+		return path;
 	}
 	
 	/**
@@ -228,19 +239,16 @@ public class SokoBot {
 		generateTree(startState, 0);
 		
 		System.out.println("Generating path...");
-		// Cook up string
-		this.output = generatePath(startState);
-		System.out.println("output: " + output);
 		
-		return this.output;
+		System.out.println("output: " + output);
 
 
-			List<State> path = tracePath(goalState);
-			StringBuilder pathString = new StringBuilder();
-			for (State state : path) {
-				pathString.append(state.getPlayerMovement());
-			}
-			System.out.println(pathString);
-			return pathString.toString();
+		List<State> path = tracePath(goalState);
+		StringBuilder pathString = new StringBuilder();
+		for (State state : path) {
+			pathString.append(state.getPlayerMovement());
+		}
+		System.out.println(pathString);
+		return pathString.toString();
 	}
 }
