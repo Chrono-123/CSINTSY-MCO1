@@ -234,10 +234,12 @@ public class SokoBot {
 //		}
 //		return path;
 //	}
+
 	
 	/**
 	 * Create a special itemsData where all crates are in the goals' positions
 	 * */
+
 	private void generateGoalItemsData(char[][] mapData) {
 		for (int i = 0; i < mapData.length; i++) {
 			for (int j = 0; j < mapData[i].length; j++) {

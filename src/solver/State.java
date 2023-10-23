@@ -56,7 +56,6 @@ public class State {
 		int[] playerPos;
 		int[] dest;
 		int[] dir;
-		
 		playerPos = Tools.getPosOfChar(itemsData, Tools.PLAYER).get(0);
 
 		// Create an array representing as direction
@@ -73,6 +72,10 @@ public class State {
 //		System.out.print("State.move(): ");
 //		System.out.println(dest[Tools.X] + ", " + dest[Tools.Y]);
 		
+
+		System.out.print("State.move(): ");
+		System.out.println(dest[Tools.X] + ", " + dest[Tools.Y]);
+
 		// Push the crate
 		if (Tools.IsCharInPos(itemsData, dest, Tools.CRATE)) {
 			int[] extraPos = new int[2];
@@ -131,7 +134,7 @@ public class State {
 
 		return dir;
 	}
-	
+
 	public int getHeuristic() {
 		// TODO: Manhattan and min distance
 		ArrayList<int[]> goals = Tools.getPosOfChar(itemsData, Tools.GOAL);
@@ -156,7 +159,7 @@ public class State {
 		
 		return totalHeuristic;
 	}
-	
+
 	public String getPlayerMovement() {
 		return playerMovement;
 	}
