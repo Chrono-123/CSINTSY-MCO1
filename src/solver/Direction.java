@@ -49,13 +49,13 @@ public enum Direction {
 			dir = "u";
 			break;
 		case EAST:
-			dir = "l";
+			dir = "r";
 			break;
 		case SOUTH:
 			dir = "d";
 			break;
 		case WEST:
-			dir = "r";
+			dir = "l";
 			break;
 		}
 		
