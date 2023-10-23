@@ -69,6 +69,7 @@ public class SokoBot {
 		
 		lookX += dir[Tools.X];
 		lookY += dir[Tools.Y];
+
 		
 		// Check if it's a space or a goal. Also check if the player
 		// tries to push two crates. Whenever you can go through
@@ -172,6 +173,7 @@ public class SokoBot {
 	/**
 	 * Create a special itemsData where all crates are in the goals' positions
 	 * */
+
 	private void generateGoalItemsData(char[][] mapData) {
 		for (int i = 0; i < mapData.length; i++) {
 			for (int j = 0; j < mapData[i].length; j++) {
@@ -239,6 +241,7 @@ public class SokoBot {
 		System.out.println("Generating path...");
 		
 		System.out.println("output: " + output);
+
 
 		List<State> path = tracePath(goalState);
 		StringBuilder pathString = new StringBuilder();
