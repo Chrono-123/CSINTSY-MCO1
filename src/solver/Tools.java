@@ -1,5 +1,7 @@
 package solver;
 
+import java.util.ArrayList;
+
 public class Tools {
 	public final static int X = 0;
 	public final static int Y = 1;
@@ -40,34 +42,41 @@ public class Tools {
 	 * 		   e.g.
 	 * 				position[X], position[Y]
 	 * */
-	public static int[] getPosOfChar(char[][] data, char target) {
-		int position[] = new int[2];
+public static ArrayList<int[]> getPosOfChar(char[][] data, char target) {
+	ArrayList<int[]> positions = new ArrayList();
 
-		/*****************************
-		 * Note:
-		 * Going through *rows* means changing *y* coordinates, and
-		 * Going through *columns* means changing *x* coordinates.
-		 * 
-		 * Therefore, accessing array element with x and y goes like this:
-		 * 		data[y][x]
-		 ***************************** 
-		 */
-		// Rows (y)
-		for (int y = 0; y < data.length; y++) {
-			// Columns (x)
-			for (int x = 0; x < data[y].length; x++) {
-				if (data[y][x] == target) {
-					position[X] = x;
-					position[Y] = y;
-					break;
-				}
+	/*****************************
+	 * Note:
+	 * Going through *rows* means changing *y* coordinates, and
+	 * Going through *columns* means changing *x* coordinates.
+	 * 
+	 * Therefore, accessing array element with x and y goes like this:
+	 * 		data[y][x]
+	 ***************************** 
+	 */
+	// Rows (y)
+	for (int y = 0; y < data.length; y++) {
+		// Columns (x)
+		for (int x = 0; x < data[y].length; x++) {
+			if (data[y][x] == target) {
+				int pos[] = new int[2];
+				pos[X] = x;
+				pos[Y] = y;
+				positions.add(pos);
 			}
 		}
-		
-		return position;
 	}
+	
+	return positions;
+}
 	
 	public static boolean IsCharInPos(char[][] data, int[] pos, char c) {
 		return data[pos[Tools.Y]][pos[Tools.X]] == c;
+	}
+	
+	public static int getDistance(int[] source, int[] dest) {
+		int xx = source[Tools.Y] - dest[Tools.Y]; 
+		int yy = source[Tools.Y] - dest[Tools.Y]; 
+		return Math.abs(xx + yy);
 	}
 }

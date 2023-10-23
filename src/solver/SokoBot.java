@@ -54,7 +54,7 @@ public class SokoBot {
 	 * @return distance to a nearest goal
 	 * */
 	public static boolean checkSpace(State state, Direction direction) {
-		int[] origin = Tools.getPosOfChar(state.getItemsData(), Tools.PLAYER);
+		int[] origin = Tools.getPosOfChar(state.getItemsData(), Tools.PLAYER).get(0);
 		
 		int lookX = origin[Tools.X];
 		int lookY = origin[Tools.Y];
@@ -101,6 +101,10 @@ public class SokoBot {
 			   (row < height) && (col < width);
 	}
 	
+	/**
+	 * Generate a state tree
+	 * @param state the parent state.
+	 * */
 	private void generateTree(State state) {
 		if (goalState != null || storage.contains(state.getItemsData())) {
 			return;
