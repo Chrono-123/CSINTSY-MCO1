@@ -175,7 +175,7 @@ public class SokoBot {
 	 * @param state the parent state.
 	 * */
 	private void generateTree(State state, int level) {
-		if (level > 50) return;
+		if (level > 100) return;
 		
 //		System.out.print("Sokobot.generateTree(state, " + level + "): ");
 //		int[] playerPos = Tools.getPosOfChar(state.getItemsData(), Tools.PLAYER).get(0);
@@ -205,7 +205,7 @@ public class SokoBot {
 			copyPos = Tools.copyArray(state.getItemsData());
 			storage.add(copyPos);
 			
-//			printStorage();
+			printStorage();
 		}
 		
 		Direction[] allDirs = {Direction.NORTH, Direction.SOUTH, 
@@ -219,17 +219,6 @@ public class SokoBot {
 
 				newState.move(dir);
 				state.addNextState(newState);
-				
-//				for (State next : state.getNextStates()) {
-//					System.out.print("Sokobot.generateTree(state, " + level + "): ");
-//					System.out.println("state.getPlayerMovement() = "+ next.getPlayerMovement());
-//				}
-//				
-//				System.out.print("Sokobot.generateTree(state, " + level + "): ");
-//				System.out.println("direction: " + newState.getPlayerMovement());
-//				
-//				System.out.print("Sokobot.generateTree(state, " + level + "): ");
-//				System.out.println("newState.heuristic = " + newState.getHeuristic());
 				
 				generateTree(newState, level + 1);
 			}
@@ -264,7 +253,7 @@ public class SokoBot {
 		
 		State target = startState;
 		int tries = 0;
-		while (!isGoalState(target) && tries < 100) {
+		while (!isGoalState(target) && tries < 10) {
 			State nextState = target;
 			
 			// Pick one with lowest heuristic value
