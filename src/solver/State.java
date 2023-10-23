@@ -28,10 +28,10 @@ public class State {
 		this.cost = 0;
 		this.playerMovement = "";
 		this.itemsData = new char[height][width];
-		this.itemsData = itemsData.clone();
+		this.itemsData = Tools.copyArray(itemsData);
 		
 		this.mapData = new char[height][width];
-		this.mapData = mapData.clone();
+		this.mapData = Tools.copyArray(mapData);
 	}
 
 	State(State parentState) {
@@ -46,13 +46,14 @@ public class State {
 		this.playerMovement = "";
 		this.itemsData = new char[height][width];
 		
-		this.itemsData = parentState.getItemsData().clone();
+		this.itemsData = Tools.copyArray(parentState.getItemsData());
 		
 		this.mapData = new char[height][width];
-		this.mapData= parentState.getMapData().clone();
+		this.mapData = Tools.copyArray(parentState.getMapData());
 	}
 
 	public void move(Direction direction) {
+		if (direction == Direction.EAST) { System.out.println("move(): EAST");}
 		int[] playerPos;
 		int[] dest;
 		int[] dir;
@@ -65,16 +66,6 @@ public class State {
 		dest = new int[2];
 		dest[Tools.X] = dir[Tools.X] + playerPos[Tools.X];
 		dest[Tools.Y] = dir[Tools.Y] + playerPos[Tools.Y];
-		
-//		System.out.print("State.move(): ");
-//		System.out.println("direction: " + Direction.dirToStr(direction));
-//		
-//		System.out.print("State.move(): ");
-//		System.out.println(dest[Tools.X] + ", " + dest[Tools.Y]);
-		
-
-		System.out.print("State.move(): ");
-		System.out.println(dest[Tools.X] + ", " + dest[Tools.Y]);
 
 		// Push the crate
 		if (Tools.IsCharInPos(itemsData, dest, Tools.CRATE)) {
@@ -90,7 +81,7 @@ public class State {
 		// Move the Player
 		replaceChar(playerPos, Tools.SPACE);
 		replaceChar(dest, Tools.PLAYER);
-
+		
 		// Update the playerMovement string
 		playerMovement = Direction.dirToStr(direction);
 	}
