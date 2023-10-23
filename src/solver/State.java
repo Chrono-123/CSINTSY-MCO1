@@ -20,19 +20,36 @@ public class State {
 	}
 
 	State(char[][] itemsData, char[][] mapData) {
+		int width, height;
+		width = SokoBot.getWidth();
+		height = SokoBot.getHeight();
+		
 		nextStates = new ArrayList<State>();
 		this.cost = 0;
 		this.playerMovement = "";
-		this.itemsData = itemsData;
-		this.mapData= mapData;
+		this.itemsData = new char[height][width];
+		this.itemsData = itemsData.clone();
+		
+		this.mapData = new char[height][width];
+		this.mapData = mapData.clone();
 	}
 
 	State(State parentState) {
+		int width, height;
+		width = SokoBot.getWidth();
+		height = SokoBot.getHeight();
+		
+		this.parentState = parentState;
+		
 		nextStates = new ArrayList<State>();
 		this.cost = 0;
 		this.playerMovement = "";
-		this.itemsData = parentState.getItemsData();
-		this.mapData= parentState.getMapData();
+		this.itemsData = new char[height][width];
+		
+		this.itemsData = parentState.getItemsData().clone();
+		
+		this.mapData = new char[height][width];
+		this.mapData= parentState.getMapData().clone();
 	}
 
 	public void move(Direction direction) {
@@ -51,11 +68,11 @@ public class State {
 		dest[Tools.Y] = dir[Tools.Y] + playerPos[Tools.Y];
 
 		
-		System.out.print("State.move(): ");
-		System.out.println("direction: " + Direction.dirToStr(direction));
-		
-		System.out.print("State.move(): ");
-		System.out.println(dest[Tools.X] + ", " + dest[Tools.Y]);
+//		System.out.print("State.move(): ");
+//		System.out.println("direction: " + Direction.dirToStr(direction));
+//		
+//		System.out.print("State.move(): ");
+//		System.out.println(dest[Tools.X] + ", " + dest[Tools.Y]);
 		
 		// Push the crate
 		if (Tools.IsCharInPos(itemsData, dest, Tools.CRATE)) {
