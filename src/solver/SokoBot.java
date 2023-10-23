@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SokoBot {	
+	private static int count = 0;
+	
+	
 	// Grid dimension
 	private int width;
 	private int height;
@@ -14,8 +17,8 @@ public class SokoBot {
 	private State goalState;
 	
 	
-	private ArrayList<State> pathway = new ArrayList();
-	private ArrayList<char[][]> storage = new ArrayList();
+	private ArrayList<State> pathway = new ArrayList<>();
+	private ArrayList<char[][]> storage = new ArrayList<>();
 	
 	private String output = "";
 	
@@ -28,10 +31,15 @@ public class SokoBot {
 		
 		for (int i = 0; i < mapData.length; i++) {
 			for (int j = 0; j < mapData[i].length; j++) {
-				if (mapData[i][j] == Tools.GOAL && itemsData[i][j] != Tools.CRATE)
+				if (mapData[i][j] == Tools.GOAL && itemsData[i][j] != Tools.CRATE) {
+					System.out.print("isGoalState(): ");
+					System.out.println("IS NOT GOAL");
 					return false;
+				}
 			}
 		}
+		System.out.print("isGoalState(): ");
+		System.out.println("IS GOAL");
 		return true;
 	}
 	
@@ -56,8 +64,6 @@ public class SokoBot {
 		mapData = state.getMapData();
 		itemsData = state.getItemsData();
 		
-		direction = state.getPlayerMovementDir();
-		
 		int[] dir = Direction.dirToPos(direction); 
 		
 		lookX += dir[Tools.X];
@@ -65,16 +71,30 @@ public class SokoBot {
 		
 		// Check if it's a space or a goal. Also check if the player
 		// tries to push two crates. Whenever you can go through
-
+		
 		int extraX = (1 * dir[Tools.X]);
 		int extraY = (1 * dir[Tools.Y]);
 		
+		System.out.print("Sokobot.checkSpace(): ");
+		System.out.println("mapData[lookY][lookX] = \"" + mapData[lookY][lookX] + "\"");
+		
+		if (extraX < 0 || extraY < 0 || extraX > width || extraY > height) {
+			return (// a space or a goal
+					(mapData[lookY][lookX] == Tools.SPACE || 
+					 mapData[lookY][lookX] == Tools.GOAL));
+		}
+		
+		System.out.print("Sokobot.checkSpace(): ");
+		System.out.println("mapData[lookY + extraY][lookX + extraX] = \"" + mapData[lookY + extraY][lookX + extraX] + "\"");
+		System.out.print("Sokobot.checkSpace(): ");
+		System.out.println("itemsData[lookY + extraY][lookX + extraX] = \"" + itemsData[lookY + extraY][lookX + extraX] + "\"");
+		
 		return (// a space or a goal
 				(mapData[lookY][lookX] == Tools.SPACE || 
-					mapData[lookY][lookX] == Tools.GOAL) &&
+				 mapData[lookY][lookX] == Tools.GOAL) &&
 				// another crate or wall
 				(itemsData[lookY + extraY][lookX + extraX] != Tools.CRATE ||
-					mapData[lookY + extraY][lookX + extraX] != Tools.WALL)
+				   mapData[lookY + extraY][lookX + extraX] != Tools.WALL)
 		);
 	}
 	
@@ -100,24 +120,39 @@ public class SokoBot {
 	 * Generate a state tree
 	 * @param state the parent state.
 	 * */
-	private void generateTree(State state) {
-		if (goalState != null || storage.contains(state.getItemsData())) {
+	private void generateTree(State state, int level) {
+		System.out.print("Sokobot.generateTree(state, " + level + "): ");
+		System.out.println("level = " + level);
+		
+		if (storage.contains(state.getItemsData())) {
+			System.out.print("Sokobot.generateTree(state, " + level + "): ");
+			System.out.println("IT EXISTS");
 			return;
+		}
+		else {
+			storage.add(state.getItemsData());
 		}
 		
 		Direction[] allDirs = {Direction.NORTH, Direction.SOUTH, 
 							   Direction.EAST, Direction.WEST};
 		
 		for (Direction dir : allDirs) {
+			System.out.print("Sokobot.generateTree(state, " + level + "): ");
 			System.out.println("Checking: " + Direction.dirToStr(dir));
 			if (checkSpace(state, dir)) {
 				State newState = new State(state);
-				state.addNextState(newState);
 				newState.move(dir);
+				state.addNextState(newState);
 				
+				for (State next : state.getNextStates()) {
+					System.out.print("Sokobot.generateTree(state, " + level + "): ");
+					System.out.println("next.getPlayerMovement() = "+ next.getPlayerMovement());
+				}
+				
+				System.out.print("Sokobot.generateTree(state, " + level + "): ");
 				System.out.println(newState.getPlayerMovement());
 				
-				generateTree(newState);
+				generateTree(newState, level + 1);
 			}
 		}
 	}
@@ -146,6 +181,8 @@ public class SokoBot {
 			// Pick one with lowest heuristic value
 			int minHeuristic = Integer.MAX_VALUE;
 			for (State whichState: startState.getNextStates()) {
+				System.out.print("generatePath(): ");
+				System.out.println("heuristic: " + whichState.getHeuristic());
 				if (whichState.getHeuristic() < minHeuristic) {
 					nextState = whichState;
 				}
@@ -155,6 +192,8 @@ public class SokoBot {
 			output += nextState.getPlayerMovement();
 			
 			target = nextState;
+			
+			System.out.println(tries);
 			tries += 1;
 		}
 		
@@ -182,13 +221,14 @@ public class SokoBot {
 		
 		System.out.println("Generating tree...");
 		// Generate a tree
-		generateTree(startState);
+		generateTree(startState, 0);
 		
 		System.out.println("Generating path...");
 		// Cook up string
-		output = generatePath(startState);
+		this.output = generatePath(startState);
 		System.out.println("output: " + output);
-		return output;
+		
+		return this.output;
 
 	}
 }

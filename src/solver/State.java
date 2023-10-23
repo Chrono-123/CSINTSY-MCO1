@@ -49,7 +49,10 @@ public class State {
 		dest[Tools.X] = dir[Tools.X] + playerPos[Tools.X];
 		dest[Tools.Y] = dir[Tools.Y] + playerPos[Tools.Y];
 		
+		System.out.print("State.move(): ");
 		System.out.println("direction: " + Direction.dirToStr(direction));
+		
+		System.out.print("State.move(): ");
 		System.out.println(dest[Tools.X] + ", " + dest[Tools.Y]);
 		
 		// Push the crate
