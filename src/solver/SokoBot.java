@@ -1,6 +1,7 @@
 package solver;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class SokoBot {	
@@ -68,6 +69,7 @@ public class SokoBot {
 		
 		lookX += dir[Tools.X];
 		lookY += dir[Tools.Y];
+
 		
 		// Check if it's a space or a goal. Also check if the player
 		// tries to push two crates. Whenever you can go through
@@ -160,6 +162,7 @@ public class SokoBot {
 	/**
 	 * Create a special itemsData where all crates are in the goals' positions
 	 * */
+
 	private void generateGoalItemsData(char[][] mapData) {
 		for (int i = 0; i < mapData.length; i++) {
 			for (int j = 0; j < mapData[i].length; j++) {
@@ -210,6 +213,7 @@ public class SokoBot {
 	 * @param itemsData board with the player and the crates
 	 * */
 	public String solveSokobanPuzzle(int width, int height, char[][] mapData, 
+
 									 char[][] itemsData) {
 		this.width = width;
 		this.height = height;
@@ -230,5 +234,13 @@ public class SokoBot {
 		
 		return this.output;
 
+
+			List<State> path = tracePath(goalState);
+			StringBuilder pathString = new StringBuilder();
+			for (State state : path) {
+				pathString.append(state.getPlayerMovement());
+			}
+			System.out.println(pathString);
+			return pathString.toString();
 	}
 }
